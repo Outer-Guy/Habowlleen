@@ -1,3 +1,172 @@
-[gd_scene format=3 uid="uid://bbyyhve7ohnvb"]
+[gd_scene load_steps=9 format=3 uid="uid://bbyyhve7ohnvb"]
+
+[ext_resource type="Script" path="res://Scripts/StateMachine.gd" id="1_agyfu"]
+
+[sub_resource type="GDScript" id="GDScript_xda28"]
+script/source = "extends Node
+
+signal Transitioned
+
+var camera
+
+func _ready():
+	camera = get_node(\"/root/CameraPivot\")
+	pass
+
+func Enter():
+	camera.Target = get_node(\"/root/Player/BodyRigPoint/Body\")
+	pass
+	
+func Exit():
+	pass
+	
+func Update(delta: float):
+	
+	pass
+	
+func Physics_Update(delta: float):
+	pass
+"
+
+[sub_resource type="GDScript" id="GDScript_7c0lq"]
+script/source = "extends Node
+
+signal Transitioned
+
+var camera
+
+func _ready():
+	camera = get_node(\"/root/CameraPivot\")
+	pass
+
+func Enter():
+	camera.Target = get_node(\"/root/Player/HeadRigPoint/Head\")
+	pass
+	
+func Exit():
+	pass
+	
+func Update(delta: float):
+	
+	pass
+	
+func Physics_Update(delta: float):
+	pass
+"
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ix130"]
+size = Vector3(100, 0.001, 100)
+
+[sub_resource type="GDScript" id="GDScript_wdwvq"]
+script/source = "extends Node3D
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	pass
+"
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_7dvx1"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_s2ec4"]
+
+[sub_resource type="GDScript" id="GDScript_c5rdu"]
+script/source = "extends Node3D
+
+@export var Target : Node3D
+@export var targetOffset : Vector3
+@export var movSmoothing : float
+@export var movSpeed : float
+
+@export var rotSmoothing : float
+@export var rotSpeed : float
+
+var camera
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	camera = get_node(\"SpringArm3D/Camera3D\")
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	
+	var offset = lerp(global_position, Target.global_position + targetOffset, movSmoothing) * movSpeed
+	translate(offset)
+	
+	look_at_from_position(camera.global_position,Target.global_position + targetOffset, Vector3.UP)
+	
+	pass
+"
 
 [node name="Level" type="Node3D"]
+
+[node name="GameManager" type="Node" parent="."]
+
+[node name="StateMachine" type="Node" parent="GameManager"]
+script = ExtResource("1_agyfu")
+initial_state = NodePath("")
+
+[node name="Throwing" type="Node" parent="GameManager/StateMachine"]
+script = SubResource("GDScript_xda28")
+
+[node name="Rolling" type="Node" parent="GameManager/StateMachine"]
+script = SubResource("GDScript_7c0lq")
+
+[node name="Floor" type="StaticBody3D" parent="."]
+collision_layer = 7
+collision_mask = 7
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Floor"]
+size = Vector3(100, 0.002, 100)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
+shape = SubResource("BoxShape3D_ix130")
+
+[node name="Player" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+script = SubResource("GDScript_wdwvq")
+
+[node name="BodyRigPoint" type="Marker3D" parent="Player"]
+
+[node name="Body" type="CharacterBody3D" parent="Player/BodyRigPoint"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player/BodyRigPoint/Body"]
+shape = SubResource("CylinderShape3D_7dvx1")
+
+[node name="Body" type="CSGCylinder3D" parent="Player/BodyRigPoint/Body"]
+
+[node name="HeadRigPoint" type="Marker3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, -0.2, 0)
+
+[node name="Head" type="CharacterBody3D" parent="Player/HeadRigPoint"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player/HeadRigPoint/Head"]
+shape = SubResource("SphereShape3D_s2ec4")
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="Player/HeadRigPoint/Head"]
+
+[node name="CameraPivot" type="Node3D" parent="." node_paths=PackedStringArray("Target")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+script = SubResource("GDScript_c5rdu")
+Target = NodePath("../Player/BodyRigPoint")
+targetOffset = Vector3(0, 2, 0)
+movSmoothing = 0.3
+movSpeed = 5.0
+rotSmoothing = 0.3
+rotSpeed = 5.0
+
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraPivot"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 5)
+collision_mask = 4
+spring_length = 5.0
+margin = 0.1
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivot/SpringArm3D"]
+transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)
