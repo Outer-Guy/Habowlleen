@@ -1,6 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://bbyyhve7ohnvb"]
+[gd_scene load_steps=10 format=3 uid="uid://bbyyhve7ohnvb"]
 
 [ext_resource type="Script" path="res://Scripts/StateMachine.gd" id="1_agyfu"]
+[ext_resource type="Environment" uid="uid://dtjphp6n2dyqi" path="res://Resources/new_environment.tres" id="2_mpolt"]
 
 [sub_resource type="GDScript" id="GDScript_xda28"]
 script/source = "extends Node
@@ -10,11 +11,11 @@ signal Transitioned
 var camera
 
 func _ready():
-	camera = get_node(\"/root/CameraPivot\")
+	camera = get_node(\"/root/Level/CameraPivot\")
 	pass
 
 func Enter():
-	camera.Target = get_node(\"/root/Player/BodyRigPoint/Body\")
+	camera.Target = get_node(\"/root/Level/Player/BodyRigPoint/Body\")
 	pass
 	
 func Exit():
@@ -36,11 +37,11 @@ signal Transitioned
 var camera
 
 func _ready():
-	camera = get_node(\"/root/CameraPivot\")
+	camera = get_node(\"/root/Level/CameraPivot\")
 	pass
 
 func Enter():
-	camera.Target = get_node(\"/root/Player/HeadRigPoint/Head\")
+	camera.Target = get_node(\"/root/Level/Player/HeadRigPoint/Head\")
 	pass
 	
 func Exit():
@@ -152,15 +153,9 @@ shape = SubResource("SphereShape3D_s2ec4")
 
 [node name="CSGSphere3D" type="CSGSphere3D" parent="Player/HeadRigPoint/Head"]
 
-[node name="CameraPivot" type="Node3D" parent="." node_paths=PackedStringArray("Target")]
+[node name="CameraPivot" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
 script = SubResource("GDScript_c5rdu")
-Target = NodePath("../Player/BodyRigPoint")
-targetOffset = Vector3(0, 2, 0)
-movSmoothing = 0.3
-movSpeed = 5.0
-rotSmoothing = 0.3
-rotSpeed = 5.0
 
 [node name="SpringArm3D" type="SpringArm3D" parent="CameraPivot"]
 transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 5)
@@ -169,4 +164,5 @@ spring_length = 5.0
 margin = 0.1
 
 [node name="Camera3D" type="Camera3D" parent="CameraPivot/SpringArm3D"]
-transform = Transform3D(-1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, 0)
+transform = Transform3D(-1, -7.6194e-09, 8.70901e-08, 0, 0.996195, 0.0871557, -8.74228e-08, 0.0871557, -0.996195, 0, 0, 0)
+environment = ExtResource("2_mpolt")
