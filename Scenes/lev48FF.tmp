@@ -37,7 +37,7 @@ func _process(delta):
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_7dvx1"]
 
 [sub_resource type="GDScript" id="GDScript_p5bsg"]
-script/source = "extends Marker3D
+script/source = "extends RemoteTransform3D
 
 var player
 var playerHead
@@ -51,10 +51,8 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	look_at(playerHead.global_position + playerHead.linear_velocity * Vector3(0,0.4,1), Vector3.UP)
-	position = playerHead.position
+	look_at(playerHead.global_position + playerHead.linear_velocity, Vector3.UP)
 	forwardSpeed = playerHead.linear_velocity * transform.basis
-	
 	pass
 "
 
@@ -92,7 +90,6 @@ func cameraStep(delta):
 	var offset = lerp(Vector3.ZERO, (Target.global_position) - global_position, movSmoothing * delta) * movSpeed
 	translate(offset)
 	transform.basis = transform.basis.slerp(Target.basis, rotSmoothing * delta)
-	print_debug(rotation, \", \", Target.rotation)
 	camera.cameraSet(springarm.global_position)
 	pass
 	
@@ -157,7 +154,6 @@ initial_state = NodePath("Throwing")
 [node name="Throwing" type="Node" parent="GameManager/StateMachine"]
 script = ExtResource("2_ppytk")
 MouseSensitivity = 0.3
-ThrowForce = 0.1
 
 [node name="Rolling" type="Node" parent="GameManager/StateMachine"]
 script = ExtResource("3_1wa8q")
@@ -190,18 +186,18 @@ shape = SubResource("CylinderShape3D_7dvx1")
 [node name="HeadRigPoint" type="Marker3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, -0.2, 0)
 
-[node name="RemoteHead" type="Marker3D" parent="Player/HeadRigPoint"]
+[node name="RemoteHead" type="RemoteTransform3D" parent="Player/HeadRigPoint"]
+remote_path = NodePath("../Head")
+update_rotation = false
+update_scale = false
 script = SubResource("GDScript_p5bsg")
 
 [node name="CSGSphere3D" type="CSGSphere3D" parent="Player/HeadRigPoint/RemoteHead"]
-transform = Transform3D(2.37, 0, 0, 0, 1.37, 0, 0, 0, 0.865, 0, 0, 0)
 
 [node name="Head" type="RigidBody3D" parent="Player/HeadRigPoint"]
 collision_layer = 3
 collision_mask = 3
 continuous_cd = true
-linear_damp = 0.1
-angular_damp = 0.2
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player/HeadRigPoint/Head"]
 shape = SubResource("SphereShape3D_s2ec4")

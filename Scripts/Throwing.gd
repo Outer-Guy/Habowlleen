@@ -1,6 +1,7 @@
 extends State
 
 @export var MouseSensitivity : float
+@export var ThrowForce : float
 
 var player
 var camera
@@ -26,6 +27,7 @@ func Enter():
 	var playerHead = player.get_node("HeadRigPoint/Head")
 	var playerHeadPoint = player.get_node("HeadRigPoint")
 	playerHead.position = playerHeadPoint.position
+	playerHead.rotation = playerHeadPoint.rotation
 	playerHead.gravity_scale = 0
 	pass
 	
@@ -75,7 +77,7 @@ func onThrowStop():
 	else: 
 		
 		var playerhead = player.get_node("HeadRigPoint/Head")
-		playerhead.apply_impulse(-playerhead.global_transform.basis.z * (newMousePosition.y - mousePosition.y))
+		playerhead.apply_impulse(-playerhead.global_transform.basis.z * ThrowForce * (newMousePosition.y - mousePosition.y))
 		playerhead.gravity_scale = 1
 		get_parent().on_child_transition(self,"Rolling")
 	pass
