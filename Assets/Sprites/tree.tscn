@@ -1,0 +1,114 @@
+[gd_scene load_steps=21 format=3 uid="uid://olgnxaxp175m"]
+
+[ext_resource type="PackedScene" uid="uid://d1fcoa7l6bbtg" path="res://Assets/3D Models/Tree.fbx" id="1_wps48"]
+[ext_resource type="Texture2D" uid="uid://b223bfu7kjsc0" path="res://Assets/Sprites/Solid_black.png" id="2_dkyse"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dqpwe"]
+albedo_texture = ExtResource("2_dkyse")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v4npc"]
+albedo_texture = ExtResource("2_dkyse")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_pnsgo"]
+albedo_texture = ExtResource("2_dkyse")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4fbxr"]
+albedo_texture = ExtResource("2_dkyse")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_57bo7"]
+albedo_texture = ExtResource("2_dkyse")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0rvxp"]
+albedo_texture = ExtResource("2_dkyse")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r5sbs"]
+albedo_texture = ExtResource("2_dkyse")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_da5d1"]
+albedo_texture = ExtResource("2_dkyse")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4kw4p"]
+albedo_texture = ExtResource("2_dkyse")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_g3hwx"]
+albedo_texture = ExtResource("2_dkyse")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_14pwq"]
+albedo_texture = ExtResource("2_dkyse")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_55qfb"]
+albedo_texture = ExtResource("2_dkyse")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_k67xn"]
+albedo_texture = ExtResource("2_dkyse")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1jp7u"]
+albedo_texture = ExtResource("2_dkyse")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lk0vc"]
+albedo_texture = ExtResource("2_dkyse")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_benev"]
+albedo_texture = ExtResource("2_dkyse")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6tir2"]
+albedo_texture = ExtResource("2_dkyse")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_imtuc"]
+albedo_texture = ExtResource("2_dkyse")
+
+[node name="Tree" instance=ExtResource("1_wps48")]
+
+[node name="Cylinder_001" parent="RootNode" index="0"]
+material_override = SubResource("StandardMaterial3D_dqpwe")
+
+[node name="Cylinder_002" parent="RootNode" index="1"]
+material_override = SubResource("StandardMaterial3D_v4npc")
+
+[node name="Cylinder_003" parent="RootNode" index="2"]
+material_override = SubResource("StandardMaterial3D_pnsgo")
+
+[node name="Cylinder_004" parent="RootNode" index="3"]
+material_override = SubResource("StandardMaterial3D_4fbxr")
+
+[node name="Cylinder_005" parent="RootNode" index="4"]
+material_override = SubResource("StandardMaterial3D_57bo7")
+
+[node name="Cylinder_006" parent="RootNode" index="5"]
+material_override = SubResource("StandardMaterial3D_0rvxp")
+
+[node name="Cylinder_007" parent="RootNode" index="6"]
+material_override = SubResource("StandardMaterial3D_r5sbs")
+
+[node name="Cylinder_008" parent="RootNode" index="7"]
+material_override = SubResource("StandardMaterial3D_da5d1")
+
+[node name="Cylinder_009" parent="RootNode" index="8"]
+material_override = SubResource("StandardMaterial3D_4kw4p")
+
+[node name="Cylinder_010" parent="RootNode" index="9"]
+material_override = SubResource("StandardMaterial3D_g3hwx")
+
+[node name="Cylinder_011" parent="RootNode" index="10"]
+material_override = SubResource("StandardMaterial3D_14pwq")
+
+[node name="Cylinder_012" parent="RootNode" index="11"]
+material_override = SubResource("StandardMaterial3D_55qfb")
+
+[node name="Cylinder_013" parent="RootNode" index="12"]
+material_override = SubResource("StandardMaterial3D_k67xn")
+
+[node name="Cylinder_014" parent="RootNode" index="13"]
+material_override = SubResource("StandardMaterial3D_1jp7u")
+
+[node name="Cylinder_015" parent="RootNode" index="14"]
+material_override = SubResource("StandardMaterial3D_lk0vc")
+
+[node name="Cylinder_016" parent="RootNode" index="15"]
+material_override = SubResource("StandardMaterial3D_benev")
+
+[node name="Cylinder_017" parent="RootNode" index="16"]
+material_override = SubResource("StandardMaterial3D_6tir2")
+
+[node name="Cylinder_018" parent="RootNode" index="17"]
+material_override = SubResource("StandardMaterial3D_imtuc")

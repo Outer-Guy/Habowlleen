@@ -1,0 +1,5 @@
+[gd_scene load_steps=2 format=3 uid="uid://7tpfq2broara"]
+
+[ext_resource type="PackedScene" uid="uid://ck7o2naxf5l6d" path="res://Assets/3D Models/SpiderWeb2.fbx" id="1_1kuep"]
+
+[node name="SpiderWeb2" instance=ExtResource("1_1kuep")]

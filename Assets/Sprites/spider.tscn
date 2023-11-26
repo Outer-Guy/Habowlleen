@@ -1,0 +1,48 @@
+[gd_scene load_steps=10 format=3 uid="uid://beivd7wcwk506"]
+
+[ext_resource type="PackedScene" uid="uid://j2l02o3jcbyp" path="res://Assets/3D Models/Spider.fbx" id="1_ojhm5"]
+[ext_resource type="Texture2D" uid="uid://b223bfu7kjsc0" path="res://Assets/Sprites/Solid_black.png" id="2_bjpvv"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dr423"]
+albedo_texture = ExtResource("2_bjpvv")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_utfv5"]
+albedo_texture = ExtResource("2_bjpvv")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7qaq3"]
+albedo_texture = ExtResource("2_bjpvv")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_67dsk"]
+albedo_texture = ExtResource("2_bjpvv")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wjq2k"]
+albedo_texture = ExtResource("2_bjpvv")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tic28"]
+albedo_texture = ExtResource("2_bjpvv")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lwa0a"]
+albedo_texture = ExtResource("2_bjpvv")
+
+[node name="Spider" instance=ExtResource("1_ojhm5")]
+
+[node name="Sphere" parent="RootNode" index="0"]
+material_override = SubResource("StandardMaterial3D_dr423")
+
+[node name="Cylinder_019" parent="RootNode" index="1"]
+material_override = SubResource("StandardMaterial3D_utfv5")
+
+[node name="Cylinder_020" parent="RootNode" index="2"]
+material_override = SubResource("StandardMaterial3D_7qaq3")
+
+[node name="Cylinder_021" parent="RootNode" index="3"]
+material_override = SubResource("StandardMaterial3D_67dsk")
+
+[node name="Cylinder_022" parent="RootNode" index="4"]
+material_override = SubResource("StandardMaterial3D_wjq2k")
+
+[node name="Cylinder_023" parent="RootNode" index="5"]
+material_override = SubResource("StandardMaterial3D_tic28")
+
+[node name="Cylinder_024" parent="RootNode" index="6"]
+material_override = SubResource("StandardMaterial3D_lwa0a")

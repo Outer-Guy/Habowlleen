@@ -1,10 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://bn7x1ob53vd66"]
+[gd_scene load_steps=3 format=3 uid="uid://bn7x1ob53vd66"]
 
 [ext_resource type="Script" path="res://Scenes/MainMenu/MainMenu.gd" id="1_ni2n3"]
-[ext_resource type="Texture2D" uid="uid://cplonqpx1gke4" path="res://Assets/Sprites/MainMenuPlaceholders/BG.png" id="2_tiuee"]
-[ext_resource type="Texture2D" uid="uid://b8aq2jo1rbx5p" path="res://Assets/Sprites/MainMenuPlaceholders/Play.png" id="3_dov3d"]
-[ext_resource type="Texture2D" uid="uid://dx7t06d1cnkpg" path="res://Assets/Sprites/MainMenuPlaceholders/Options.png" id="4_06vyr"]
-[ext_resource type="Texture2D" uid="uid://ddaynnq4deejf" path="res://Assets/Sprites/MainMenuPlaceholders/Quit.png" id="5_f2kgs"]
+[ext_resource type="Texture2D" uid="uid://bhtrsit0i5yi2" path="res://Assets/Sprites/MainMenu.png" id="2_bjqhq"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -16,39 +13,23 @@ grow_vertical = 2
 script = ExtResource("1_ni2n3")
 
 [node name="Bg" type="Sprite2D" parent="."]
-position = Vector2(576, 324)
-scale = Vector2(0.527472, 0.529412)
-texture = ExtResource("2_tiuee")
+position = Vector2(579.259, 323.176)
+scale = Vector2(0.844423, 0.843291)
+texture = ExtResource("2_bjqhq")
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
-layout_mode = 1
-anchors_preset = 13
-anchor_left = 0.5
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -200.0
-offset_top = 296.0
-offset_right = 200.0
-offset_bottom = -44.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="Play" type="TextureButton" parent="."]
 layout_mode = 2
-size_flags_vertical = 8
+offset_left = 479.0
+offset_top = 208.0
+offset_right = 714.0
+offset_bottom = 274.0
 
-[node name="Play" type="TextureButton" parent="MarginContainer/VBoxContainer"]
+[node name="Quit Game" type="TextureButton" parent="."]
 layout_mode = 2
-texture_normal = ExtResource("3_dov3d")
+offset_left = 486.0
+offset_top = 310.0
+offset_right = 697.0
+offset_bottom = 378.0
 
-[node name="Options" type="TextureButton" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-texture_normal = ExtResource("4_06vyr")
-
-[node name="Quit Game" type="TextureButton" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-texture_normal = ExtResource("5_f2kgs")
-
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Play" to="." method="_on_play_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Options" to="." method="_on_options_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/Quit Game" to="." method="_on_quit_game_pressed"]
+[connection signal="pressed" from="Play" to="." method="_on_play_pressed"]
+[connection signal="pressed" from="Quit Game" to="." method="_on_quit_game_pressed"]

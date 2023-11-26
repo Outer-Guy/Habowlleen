@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://2xk4b0a83vdi"]
+
+[ext_resource type="PackedScene" uid="uid://c8kkk01i4th4g" path="res://Assets/3D Models/Lapida.fbx" id="1_uu0pp"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_rwi4o"]
+size = Vector3(0.082476, 0.258682, 0.1815)
+
+[node name="Tombstone" type="RigidBody3D"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0993941, 0)
+shape = SubResource("BoxShape3D_rwi4o")
+
+[node name="Lapida" parent="." instance=ExtResource("1_uu0pp")]
+transform = Transform3D(8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0)
