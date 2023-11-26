@@ -7,7 +7,6 @@ var camera
 var heldCamera : bool
 var heldThrow : bool
 var mousePosition
-var ThrownSpeed
 
 func _ready():
 	player = get_node("/root/Level/Player")
@@ -15,14 +14,19 @@ func _ready():
 	pass
 
 func Enter():
+	camera.Enter()
 	camera.Target = player
-	camera.setCameraOffset(Vector3(1.5,1.5,0))
+	camera.setCameraOffset(Vector3(1.25,1.5,0))
 	camera.setCameraLenght(3)
 	
 	camera.movSmoothing = 10
 	camera.movSpeed = 4
 	camera.rotSmoothing = 20
 	camera.rotSpeed = 1
+	var playerHead = player.get_node("HeadRigPoint/Head")
+	var playerHeadPoint = player.get_node("HeadRigPoint")
+	playerHead.position = playerHeadPoint.position
+	playerHead.gravity_scale = 0
 	pass
 	
 func Exit():
@@ -69,7 +73,10 @@ func onThrowStop():
 	if (newMousePosition.y - mousePosition.y) < 20:
 		mousePosition = null
 	else: 
-		ThrownSpeed = newMousePosition.y - mousePosition.y
+		
+		var playerhead = player.get_node("HeadRigPoint/Head")
+		playerhead.apply_impulse(-playerhead.global_transform.basis.z * (newMousePosition.y - mousePosition.y))
+		playerhead.gravity_scale = 1
 		get_parent().on_child_transition(self,"Rolling")
 	pass
 	
