@@ -21,6 +21,11 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if current_state:
+		current_state.Update(delta)
+	pass
+
+func _physics_process(delta):
+	if current_state:
 		current_state.Physics_Update(delta)
 	pass
 
@@ -36,6 +41,7 @@ func on_child_transition(state, new_state_name):
 	
 	if current_state:
 		current_state.Exit()
+		current_state.emit_signal("Transitioned")
 		
 	new_state.Enter()
 	
