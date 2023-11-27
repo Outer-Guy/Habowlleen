@@ -1,0 +1,5 @@
+[gd_scene load_steps=2 format=3 uid="uid://bv5sfrj2w7ou4"]
+
+[ext_resource type="PackedScene" uid="uid://cqlerwdr1v0wx" path="res://Assets/3D Models/Pumpkin.fbx" id="1_s86pf"]
+
+[node name="Pumpkin" instance=ExtResource("1_s86pf")]
