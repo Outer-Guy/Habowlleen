@@ -1,5 +1,8 @@
 extends RigidBody3D
 
+signal broke
+
+var broken : bool = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -11,12 +14,8 @@ func _process(delta):
 	pass
 
 
-func _on_body_entered(body):
-	
-	#if body.name == "Head"
-	pass # Replace with function body.
-
-
 func _on_body_shape_entered(body_rid, body, body_shape_index, local_shape_index):
-	print_debug(body.name)
+	if body.name != "Floor" && broken == false:
+		broken = true
+		broke.emit()
 	pass # Replace with function body.

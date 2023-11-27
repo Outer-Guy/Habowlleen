@@ -1,0 +1,640 @@
+[gd_scene load_steps=23 format=3 uid="uid://bbyyhve7ohnvb"]
+
+[ext_resource type="Script" path="res://Scripts/StateMachine.gd" id="1_agyfu"]
+[ext_resource type="Script" path="res://Scenes/GameManager.gd" id="1_v4sq5"]
+[ext_resource type="Environment" uid="uid://dtjphp6n2dyqi" path="res://Resources/new_environment.tres" id="2_mpolt"]
+[ext_resource type="Script" path="res://Scripts/Throwing.gd" id="2_ppytk"]
+[ext_resource type="Script" path="res://Scripts/Rolling.gd" id="3_1wa8q"]
+[ext_resource type="Texture2D" uid="uid://nuhvhnh4icff" path="res://Assets/Sprites/Cartoon_green_texture_grass.jpg" id="4_37gg2"]
+[ext_resource type="PackedScene" uid="uid://cqlerwdr1v0wx" path="res://Assets/3D Models/Pumpkin.fbx" id="4_otpve"]
+[ext_resource type="PackedScene" uid="uid://pvahi07fa2ds" path="res://Assets/3D Models/jack_lantern_body.tscn" id="5_uxlqd"]
+[ext_resource type="PackedScene" uid="uid://bnpm1j23xev16" path="res://Scenes/tombstone.tscn" id="8_u28u6"]
+[ext_resource type="PackedScene" path="res://Assets/Sprites/spider.tscn" id="9_7orq2"]
+[ext_resource type="PackedScene" path="res://Assets/Sprites/tree.tscn" id="10_gkj7h"]
+[ext_resource type="PackedScene" path="res://Assets/3D Models/spider_web_2.tscn" id="11_i0cfi"]
+
+[sub_resource type="GDScript" id="GDScript_3y0ym"]
+script/source = "extends Control
+
+signal hideThrowUI
+
+func _on_throwing_transitioned():
+	print_debug(\"UIHidden\")
+	hide()
+	pass # Replace with function body.
+
+
+func _on_tombstone_3_broke():
+	pass # Replace with function body.
+
+
+func _on_tombstone_broke():
+	pass # Replace with function body.
+"
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_54m6y"]
+albedo_color = Color(0.439216, 0.439216, 0.439216, 1)
+albedo_texture = ExtResource("4_37gg2")
+uv1_scale = Vector3(30, 30, 30)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ix130"]
+size = Vector3(100, 0.001, 100)
+
+[sub_resource type="GDScript" id="GDScript_wdwvq"]
+script/source = "extends Node3D
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	pass
+"
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_7dvx1"]
+
+[sub_resource type="GDScript" id="GDScript_p5bsg"]
+script/source = "extends Marker3D
+
+var player
+var playerHead
+var forwardSpeed
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	player = get_node(\"/root/Level/Player\")
+	playerHead = get_node(\"/root/Level/Player/HeadRigPoint/Head\")
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	look_at(playerHead.global_position + playerHead.linear_velocity * Vector3(0,0,1), Vector3.UP)
+	#rotate_y(0.01)
+	#print_debug(position - playerHead.position)
+	position = playerHead.position
+	forwardSpeed = playerHead.linear_velocity * transform.basis
+	
+	pass
+"
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_s2ec4"]
+radius = 0.864483
+
+[sub_resource type="GDScript" id="GDScript_c5rdu"]
+script/source = "extends Node3D
+
+var Target : Node3D
+var targetOffset : Vector3
+
+var movSmoothing : float
+var movSpeed : float
+
+var rotSmoothing : float
+var rotSpeed : float
+
+var fovSmoothing
+var cameraLenght
+
+var springarm
+var camera
+
+# Called when the node enters the scene tree for the first time.
+func Enter():
+	camera = get_node(\"SpringArm3D/Camera3D\")
+	springarm = get_node(\"SpringArm3D\")
+	springarm.position = targetOffset
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func cameraStep(delta):
+	
+	var _origin = global_transform.origin
+	var _basis = global_transform.basis
+	var offset = lerp(Vector3.ZERO, (Target.global_position) - _origin, movSmoothing * delta) * movSpeed
+	_origin = _origin + offset
+	#rotate_y(lerp_angle(deg_to_rad(rotation.y), deg_to_rad(Target.rotation.y), rotSmoothing * delta))
+	_basis =Target.basis
+	#_basis = _basis.slerp(Target.basis, rotSmoothing * delta)
+	var trans = Transform3D(_basis, _origin)
+	global_transform = trans
+	#rotation = lerp_angle(rotation.y, Target.rotation.y, rotSmoothing * delta)
+	#print_debug(rotation, \", \", Target.rotation)
+	camera.cameraSet(springarm.global_position)
+	pass
+	
+func setCameraLenght(lenght : float):
+	cameraLenght = lenght
+	springarm.spring_length = lenght
+	camera.position = Vector3(0,0,lenght)
+	
+func setCameraOffset(offset : Vector3):
+	targetOffset = offset
+	springarm.position = targetOffset
+
+func FOVchange(newFoV : float):
+	camera.fov = lerp(camera.fov,newFoV, fovSmoothing * get_process_delta_time())
+	pass
+	
+"
+
+[sub_resource type="GDScript" id="GDScript_7g40a"]
+script/source = "extends Camera3D
+
+
+# Called when the node enters the scene tree for the first time.
+func cameraSet(Target):
+	look_at_from_position(global_position, Target, Vector3.UP)
+	pass
+"
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_65va2"]
+size = Vector3(1000, 1, 1000)
+
+[node name="Level" type="Node3D"]
+
+[node name="ThrowingControls" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = SubResource("GDScript_3y0ym")
+
+[node name="Button" type="Button" parent="ThrowingControls"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 28.817
+anchor_bottom = 16.263
+offset_right = 1.31995
+offset_bottom = -8.52002
+
+[node name="Button2" type="Button" parent="ThrowingControls"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 28.817
+anchor_bottom = 16.263
+offset_left = 370.0
+offset_top = 362.0
+offset_right = -483.68
+offset_bottom = -8.52002
+
+[node name="GameManager" type="Node" parent="."]
+script = ExtResource("1_v4sq5")
+
+[node name="StateMachine" type="Node" parent="GameManager" node_paths=PackedStringArray("initial_state")]
+script = ExtResource("1_agyfu")
+initial_state = NodePath("Throwing")
+
+[node name="Throwing" type="Node" parent="GameManager/StateMachine"]
+script = ExtResource("2_ppytk")
+MouseSensitivity = 0.3
+ThrowForce = 0.1
+
+[node name="Rolling" type="Node" parent="GameManager/StateMachine"]
+script = ExtResource("3_1wa8q")
+
+[node name="Floor" type="StaticBody3D" parent="."]
+collision_layer = 7
+collision_mask = 7
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Floor"]
+material_override = SubResource("StandardMaterial3D_54m6y")
+size = Vector3(100, 0.002, 100)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
+shape = SubResource("BoxShape3D_ix130")
+
+[node name="Player" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+script = SubResource("GDScript_wdwvq")
+
+[node name="BodyRigPoint" type="Marker3D" parent="Player"]
+
+[node name="Body" type="CharacterBody3D" parent="Player/BodyRigPoint"]
+collision_layer = 3
+collision_mask = 3
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player/BodyRigPoint/Body"]
+shape = SubResource("CylinderShape3D_7dvx1")
+
+[node name="JackLanternBody" parent="Player/BodyRigPoint/Body" instance=ExtResource("5_uxlqd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+
+[node name="HeadRigPoint" type="Marker3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, -0.2, 0)
+
+[node name="RemoteHead" type="Marker3D" parent="Player/HeadRigPoint"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
+script = SubResource("GDScript_p5bsg")
+
+[node name="Head" type="RigidBody3D" parent="Player/HeadRigPoint"]
+collision_layer = 3
+collision_mask = 3
+continuous_cd = true
+linear_damp = 0.05
+angular_damp = 0.01
+
+[node name="Pumpkin" parent="Player/HeadRigPoint/Head" instance=ExtResource("4_otpve")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0.00299799, -0.00653684)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player/HeadRigPoint/Head"]
+shape = SubResource("SphereShape3D_s2ec4")
+
+[node name="CameraPivot" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+visible = false
+script = SubResource("GDScript_c5rdu")
+
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraPivot"]
+transform = Transform3D(1, 0, 1.74846e-07, 0, 1, 0, -1.74846e-07, 0, 1, 0, 0, 0)
+collision_mask = 4
+spring_length = 5.0
+margin = 0.1
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivot/SpringArm3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5)
+environment = ExtResource("2_mpolt")
+fov = 90.0
+script = SubResource("GDScript_7g40a")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.538961, 0.541675, -0.645065, 0.122788, 0.707107, 0.696364, 0.833333, -0.454519, 0.314592, 0, 5.5, 0)
+shadow_enabled = true
+
+[node name="Tombstones" type="Node3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0.107685, -28.5977)
+
+[node name="Tombstone" parent="Tombstones" instance=ExtResource("8_u28u6")]
+
+[node name="Tombstone2" parent="Tombstones" instance=ExtResource("8_u28u6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.24685, 0, 1.85636e-07)
+
+[node name="Tombstone3" parent="Tombstones" instance=ExtResource("8_u28u6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.49377, 0, 2.99391)
+
+[node name="Tombstone4" parent="Tombstones" instance=ExtResource("8_u28u6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.48214, 0, -2.1225)
+
+[node name="Tombstones2" type="Node3D" parent="."]
+transform = Transform3D(-0.994881, 0, -0.101056, 0, 1, 0, 0.101056, 0, -0.994881, -32.8102, 0.107685, -0.0319958)
+
+[node name="Tombstone" parent="Tombstones2" instance=ExtResource("8_u28u6")]
+
+[node name="Tombstone2" parent="Tombstones2" instance=ExtResource("8_u28u6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.24685, 0, 1.85636e-07)
+
+[node name="Tombstone3" parent="Tombstones2" instance=ExtResource("8_u28u6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.49377, 0, 2.99391)
+
+[node name="Tombstone4" parent="Tombstones2" instance=ExtResource("8_u28u6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.48214, 0, -2.1225)
+
+[node name="Spider" parent="." instance=ExtResource("9_7orq2")]
+transform = Transform3D(8, 0, 0, 0, 8, 0, 0, 0, 8, -10.0239, 0.000500679, -3.14909)
+
+[node name="Spider2" parent="." instance=ExtResource("9_7orq2")]
+transform = Transform3D(5.0453, 0, -6.20846, 0, 8, 0, 6.20846, 0, 5.0453, -10.0239, 0.000500679, -23.3143)
+
+[node name="Spider3" parent="." instance=ExtResource("9_7orq2")]
+transform = Transform3D(-5.2412, 0, -6.04399, 0, 8, 0, 6.04399, 0, -5.2412, 11.0721, 0.000500679, -23.3143)
+
+[node name="Spider4" parent="." instance=ExtResource("9_7orq2")]
+transform = Transform3D(-7.97506, 0, 0.631153, 0, 8, 0, -0.631153, 0, -7.97506, 24.3496, 0.000500679, -3.55041)
+
+[node name="Trees" type="Node3D" parent="."]
+
+[node name="Tree" parent="Trees" instance=ExtResource("10_gkj7h")]
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, -19.2104, 0.000500202, -12.5939)
+
+[node name="SpiderWeb2" parent="Trees/Tree" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(-0.000500699, 0.270463, 0.129806, -0.283204, 0.0423973, -0.0894308, -0.0989705, -0.122688, 0.25525, -0.0601387, 0.463254, -0.0969433)
+
+[node name="SpiderWeb3" parent="Trees/Tree" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.0695082, -0.252259, 0.146745, -0.285129, -0.0908575, -0.0211304, 0.0622109, -0.134575, -0.260805, 0.0276723, 0.463254, -0.0969433)
+
+[node name="SpiderWeb4" parent="Trees/Tree" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.077396, -0.225136, -0.0763132, -0.237607, -0.0757146, -0.0176087, -0.00725473, 0.0779817, -0.237416, 0.00706995, 0.463254, -0.278046)
+
+[node name="Tree2" parent="Trees" instance=ExtResource("10_gkj7h")]
+transform = Transform3D(-2.67703, 0, -7.5388, 0, 8, 0, 7.5388, 0, -2.67703, -21.5921, 0.000500202, -8.62606)
+
+[node name="SpiderWeb2" parent="Trees/Tree2" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(-0.000500699, 0.270463, 0.129806, -0.283204, 0.0423973, -0.0894308, -0.0989705, -0.122688, 0.25525, -0.0601387, 0.463254, -0.0969433)
+
+[node name="SpiderWeb3" parent="Trees/Tree2" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.0695082, -0.252259, 0.146745, -0.285129, -0.0908575, -0.0211304, 0.0622109, -0.134575, -0.260805, 0.0276723, 0.463254, -0.0969433)
+
+[node name="SpiderWeb4" parent="Trees/Tree2" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.077396, -0.225136, -0.0763132, -0.237607, -0.0757146, -0.0176087, -0.00725473, 0.0779817, -0.237416, 0.00706995, 0.463254, -0.278046)
+
+[node name="Tree3" parent="Trees" instance=ExtResource("10_gkj7h")]
+transform = Transform3D(-2.87562, 0, 13.7015, 0, 14, 0, -13.7015, 0, -2.87562, -21.1459, 0.000500202, -17.7131)
+
+[node name="SpiderWeb2" parent="Trees/Tree3" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(-0.000500699, 0.270463, 0.129806, -0.283204, 0.0423973, -0.0894308, -0.0989705, -0.122688, 0.25525, -0.0601387, 0.463254, -0.0969433)
+
+[node name="SpiderWeb3" parent="Trees/Tree3" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.0695082, -0.252259, 0.146745, -0.285129, -0.0908575, -0.0211304, 0.0622109, -0.134575, -0.260805, 0.0276723, 0.463254, -0.0969433)
+
+[node name="SpiderWeb4" parent="Trees/Tree3" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.077396, -0.225136, -0.0763132, -0.237607, -0.0757146, -0.0176087, -0.00725473, 0.0779817, -0.237416, 0.00706995, 0.463254, -0.278046)
+
+[node name="Trees2" type="Node3D" parent="."]
+transform = Transform3D(0.720297, 0, 0.693666, 0, 1, 0, -0.693666, 0, 0.720297, 0, 0, 26.8403)
+
+[node name="Tree" parent="Trees2" instance=ExtResource("10_gkj7h")]
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, -19.2104, 0.000500202, -12.5939)
+
+[node name="SpiderWeb2" parent="Trees2/Tree" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(-0.000500699, 0.270463, 0.129806, -0.283204, 0.0423973, -0.0894308, -0.0989705, -0.122688, 0.25525, -0.0601387, 0.463254, -0.0969433)
+
+[node name="SpiderWeb3" parent="Trees2/Tree" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.0695082, -0.252259, 0.146745, -0.285129, -0.0908575, -0.0211304, 0.0622109, -0.134575, -0.260805, 0.0276723, 0.463254, -0.0969433)
+
+[node name="SpiderWeb4" parent="Trees2/Tree" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.077396, -0.225136, -0.0763132, -0.237607, -0.0757146, -0.0176087, -0.00725473, 0.0779817, -0.237416, 0.00706995, 0.463254, -0.278046)
+
+[node name="Tree2" parent="Trees2" instance=ExtResource("10_gkj7h")]
+transform = Transform3D(-2.67703, 0, -7.5388, 0, 8, 0, 7.5388, 0, -2.67703, -21.5921, 0.000500202, -8.62606)
+
+[node name="SpiderWeb2" parent="Trees2/Tree2" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(-0.000500699, 0.270463, 0.129806, -0.283204, 0.0423973, -0.0894308, -0.0989705, -0.122688, 0.25525, -0.0601387, 0.463254, -0.0969433)
+
+[node name="SpiderWeb3" parent="Trees2/Tree2" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.0695082, -0.252259, 0.146745, -0.285129, -0.0908575, -0.0211304, 0.0622109, -0.134575, -0.260805, 0.0276723, 0.463254, -0.0969433)
+
+[node name="SpiderWeb4" parent="Trees2/Tree2" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.077396, -0.225136, -0.0763132, -0.237607, -0.0757146, -0.0176087, -0.00725473, 0.0779817, -0.237416, 0.00706995, 0.463254, -0.278046)
+
+[node name="Tree3" parent="Trees2" instance=ExtResource("10_gkj7h")]
+transform = Transform3D(-2.87562, 0, 13.7015, 0, 14, 0, -13.7015, 0, -2.87562, -21.1459, 0.000500202, -17.7131)
+
+[node name="SpiderWeb2" parent="Trees2/Tree3" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(-0.000500699, 0.270463, 0.129806, -0.283204, 0.0423973, -0.0894308, -0.0989705, -0.122688, 0.25525, -0.0601387, 0.463254, -0.0969433)
+
+[node name="SpiderWeb3" parent="Trees2/Tree3" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.0695082, -0.252259, 0.146745, -0.285129, -0.0908575, -0.0211304, 0.0622109, -0.134575, -0.260805, 0.0276723, 0.463254, -0.0969433)
+
+[node name="SpiderWeb4" parent="Trees2/Tree3" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.077396, -0.225136, -0.0763132, -0.237607, -0.0757146, -0.0176087, -0.00725473, 0.0779817, -0.237416, 0.00706995, 0.463254, -0.278046)
+
+[node name="Trees3" type="Node3D" parent="."]
+transform = Transform3D(0.720297, 0, 0.693666, 0, 1, 0, -0.693666, 0, 0.720297, 11.2111, 0, 15.5827)
+
+[node name="Tree" parent="Trees3" instance=ExtResource("10_gkj7h")]
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, -19.2104, 0.000500202, -12.5939)
+
+[node name="SpiderWeb2" parent="Trees3/Tree" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(-0.000500699, 0.270463, 0.129806, -0.283204, 0.0423973, -0.0894308, -0.0989705, -0.122688, 0.25525, -0.0601387, 0.463254, -0.0969433)
+
+[node name="SpiderWeb3" parent="Trees3/Tree" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.0695082, -0.252259, 0.146745, -0.285129, -0.0908575, -0.0211304, 0.0622109, -0.134575, -0.260805, 0.0276723, 0.463254, -0.0969433)
+
+[node name="SpiderWeb4" parent="Trees3/Tree" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.077396, -0.225136, -0.0763132, -0.237607, -0.0757146, -0.0176087, -0.00725473, 0.0779817, -0.237416, 0.00706995, 0.463254, -0.278046)
+
+[node name="Tree2" parent="Trees3" instance=ExtResource("10_gkj7h")]
+transform = Transform3D(-2.67703, 0, -7.5388, 0, 8, 0, 7.5388, 0, -2.67703, -21.5921, 0.000500202, -8.62606)
+
+[node name="SpiderWeb2" parent="Trees3/Tree2" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(-0.000500699, 0.270463, 0.129806, -0.283204, 0.0423973, -0.0894308, -0.0989705, -0.122688, 0.25525, -0.0601387, 0.463254, -0.0969433)
+
+[node name="SpiderWeb3" parent="Trees3/Tree2" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.0695082, -0.252259, 0.146745, -0.285129, -0.0908575, -0.0211304, 0.0622109, -0.134575, -0.260805, 0.0276723, 0.463254, -0.0969433)
+
+[node name="SpiderWeb4" parent="Trees3/Tree2" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.077396, -0.225136, -0.0763132, -0.237607, -0.0757146, -0.0176087, -0.00725473, 0.0779817, -0.237416, 0.00706995, 0.463254, -0.278046)
+
+[node name="Tree3" parent="Trees3" instance=ExtResource("10_gkj7h")]
+transform = Transform3D(-2.87562, 0, 13.7015, 0, 14, 0, -13.7015, 0, -2.87562, -21.1459, 0.000500202, -17.7131)
+
+[node name="SpiderWeb2" parent="Trees3/Tree3" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(-0.000500699, 0.270463, 0.129806, -0.283204, 0.0423973, -0.0894308, -0.0989705, -0.122688, 0.25525, -0.0601387, 0.463254, -0.0969433)
+
+[node name="SpiderWeb3" parent="Trees3/Tree3" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.0695082, -0.252259, 0.146745, -0.285129, -0.0908575, -0.0211304, 0.0622109, -0.134575, -0.260805, 0.0276723, 0.463254, -0.0969433)
+
+[node name="SpiderWeb4" parent="Trees3/Tree3" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.077396, -0.225136, -0.0763132, -0.237607, -0.0757146, -0.0176087, -0.00725473, 0.0779817, -0.237416, 0.00706995, 0.463254, -0.278046)
+
+[node name="Trees4" type="Node3D" parent="."]
+transform = Transform3D(0.720297, 0, 0.693666, 0, 1, 0, -0.693666, 0, 0.720297, 50.8139, 0, 15.5827)
+
+[node name="Tree" parent="Trees4" instance=ExtResource("10_gkj7h")]
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, -19.2104, 0.000500202, -12.5939)
+
+[node name="SpiderWeb2" parent="Trees4/Tree" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(-0.000500699, 0.270463, 0.129806, -0.283204, 0.0423973, -0.0894308, -0.0989705, -0.122688, 0.25525, -0.0601387, 0.463254, -0.0969433)
+
+[node name="SpiderWeb3" parent="Trees4/Tree" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.0695082, -0.252259, 0.146745, -0.285129, -0.0908575, -0.0211304, 0.0622109, -0.134575, -0.260805, 0.0276723, 0.463254, -0.0969433)
+
+[node name="SpiderWeb4" parent="Trees4/Tree" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.077396, -0.225136, -0.0763132, -0.237607, -0.0757146, -0.0176087, -0.00725473, 0.0779817, -0.237416, 0.00706995, 0.463254, -0.278046)
+
+[node name="Tree2" parent="Trees4" instance=ExtResource("10_gkj7h")]
+transform = Transform3D(-2.67703, 0, -7.5388, 0, 8, 0, 7.5388, 0, -2.67703, -21.5921, 0.000500202, -8.62606)
+
+[node name="SpiderWeb2" parent="Trees4/Tree2" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(-0.000500699, 0.270463, 0.129806, -0.283204, 0.0423973, -0.0894308, -0.0989705, -0.122688, 0.25525, -0.0601387, 0.463254, -0.0969433)
+
+[node name="SpiderWeb3" parent="Trees4/Tree2" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.0695082, -0.252259, 0.146745, -0.285129, -0.0908575, -0.0211304, 0.0622109, -0.134575, -0.260805, 0.0276723, 0.463254, -0.0969433)
+
+[node name="SpiderWeb4" parent="Trees4/Tree2" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.077396, -0.225136, -0.0763132, -0.237607, -0.0757146, -0.0176087, -0.00725473, 0.0779817, -0.237416, 0.00706995, 0.463254, -0.278046)
+
+[node name="Tree3" parent="Trees4" instance=ExtResource("10_gkj7h")]
+transform = Transform3D(-2.87562, 0, 13.7015, 0, 14, 0, -13.7015, 0, -2.87562, -21.1459, 0.000500202, -17.7131)
+
+[node name="SpiderWeb2" parent="Trees4/Tree3" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(-0.000500699, 0.270463, 0.129806, -0.283204, 0.0423973, -0.0894308, -0.0989705, -0.122688, 0.25525, -0.0601387, 0.463254, -0.0969433)
+
+[node name="SpiderWeb3" parent="Trees4/Tree3" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.0695082, -0.252259, 0.146745, -0.285129, -0.0908575, -0.0211304, 0.0622109, -0.134575, -0.260805, 0.0276723, 0.463254, -0.0969433)
+
+[node name="SpiderWeb4" parent="Trees4/Tree3" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.077396, -0.225136, -0.0763132, -0.237607, -0.0757146, -0.0176087, -0.00725473, 0.0779817, -0.237416, 0.00706995, 0.463254, -0.278046)
+
+[node name="Trees5" type="Node3D" parent="."]
+transform = Transform3D(0.819872, 0, -0.572547, 0, 1, 0, 0.572547, 0, 0.819872, 46.2833, 0, 28.7718)
+
+[node name="Tree" parent="Trees5" instance=ExtResource("10_gkj7h")]
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, -19.2104, 0.000500202, -12.5939)
+
+[node name="SpiderWeb2" parent="Trees5/Tree" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(-0.000500699, 0.270463, 0.129806, -0.283204, 0.0423973, -0.0894308, -0.0989705, -0.122688, 0.25525, -0.0601387, 0.463254, -0.0969433)
+
+[node name="SpiderWeb3" parent="Trees5/Tree" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.0695082, -0.252259, 0.146745, -0.285129, -0.0908575, -0.0211304, 0.0622109, -0.134575, -0.260805, 0.0276723, 0.463254, -0.0969433)
+
+[node name="SpiderWeb4" parent="Trees5/Tree" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.077396, -0.225136, -0.0763132, -0.237607, -0.0757146, -0.0176087, -0.00725473, 0.0779817, -0.237416, 0.00706995, 0.463254, -0.278046)
+
+[node name="Tree2" parent="Trees5" instance=ExtResource("10_gkj7h")]
+transform = Transform3D(-2.67703, 0, -7.5388, 0, 8, 0, 7.5388, 0, -2.67703, -21.5921, 0.000500202, -8.62606)
+
+[node name="SpiderWeb2" parent="Trees5/Tree2" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(-0.000500699, 0.270463, 0.129806, -0.283204, 0.0423973, -0.0894308, -0.0989705, -0.122688, 0.25525, -0.0601387, 0.463254, -0.0969433)
+
+[node name="SpiderWeb3" parent="Trees5/Tree2" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.0695082, -0.252259, 0.146745, -0.285129, -0.0908575, -0.0211304, 0.0622109, -0.134575, -0.260805, 0.0276723, 0.463254, -0.0969433)
+
+[node name="SpiderWeb4" parent="Trees5/Tree2" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.077396, -0.225136, -0.0763132, -0.237607, -0.0757146, -0.0176087, -0.00725473, 0.0779817, -0.237416, 0.00706995, 0.463254, -0.278046)
+
+[node name="Tree3" parent="Trees5" instance=ExtResource("10_gkj7h")]
+transform = Transform3D(-2.87562, 0, 13.7015, 0, 14, 0, -13.7015, 0, -2.87562, -21.1459, 0.000500202, -17.7131)
+
+[node name="SpiderWeb2" parent="Trees5/Tree3" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(-0.000500699, 0.270463, 0.129806, -0.283204, 0.0423973, -0.0894308, -0.0989705, -0.122688, 0.25525, -0.0601387, 0.463254, -0.0969433)
+
+[node name="SpiderWeb3" parent="Trees5/Tree3" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.0695082, -0.252259, 0.146745, -0.285129, -0.0908575, -0.0211304, 0.0622109, -0.134575, -0.260805, 0.0276723, 0.463254, -0.0969433)
+
+[node name="SpiderWeb4" parent="Trees5/Tree3" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.077396, -0.225136, -0.0763132, -0.237607, -0.0757146, -0.0176087, -0.00725473, 0.0779817, -0.237416, 0.00706995, 0.463254, -0.278046)
+
+[node name="Trees6" type="Node3D" parent="."]
+transform = Transform3D(0.935277, 0, 0.353916, 0, 1, 0, -0.353916, 0, 0.935277, 46.2833, 0, -21.3138)
+
+[node name="Tree" parent="Trees6" instance=ExtResource("10_gkj7h")]
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, -19.2104, 0.000500202, -12.5939)
+
+[node name="SpiderWeb2" parent="Trees6/Tree" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(-0.000500699, 0.270463, 0.129806, -0.283204, 0.0423973, -0.0894308, -0.0989705, -0.122688, 0.25525, -0.0601387, 0.463254, -0.0969433)
+
+[node name="SpiderWeb3" parent="Trees6/Tree" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.0695082, -0.252259, 0.146745, -0.285129, -0.0908575, -0.0211304, 0.0622109, -0.134575, -0.260805, 0.0276723, 0.463254, -0.0969433)
+
+[node name="SpiderWeb4" parent="Trees6/Tree" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.077396, -0.225136, -0.0763132, -0.237607, -0.0757146, -0.0176087, -0.00725473, 0.0779817, -0.237416, 0.00706995, 0.463254, -0.278046)
+
+[node name="Tree2" parent="Trees6" instance=ExtResource("10_gkj7h")]
+transform = Transform3D(-2.67703, 0, -7.5388, 0, 8, 0, 7.5388, 0, -2.67703, -21.5921, 0.000500202, -8.62606)
+
+[node name="SpiderWeb2" parent="Trees6/Tree2" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(-0.000500699, 0.270463, 0.129806, -0.283204, 0.0423973, -0.0894308, -0.0989705, -0.122688, 0.25525, -0.0601387, 0.463254, -0.0969433)
+
+[node name="SpiderWeb3" parent="Trees6/Tree2" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.0695082, -0.252259, 0.146745, -0.285129, -0.0908575, -0.0211304, 0.0622109, -0.134575, -0.260805, 0.0276723, 0.463254, -0.0969433)
+
+[node name="SpiderWeb4" parent="Trees6/Tree2" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.077396, -0.225136, -0.0763132, -0.237607, -0.0757146, -0.0176087, -0.00725473, 0.0779817, -0.237416, 0.00706995, 0.463254, -0.278046)
+
+[node name="Tree3" parent="Trees6" instance=ExtResource("10_gkj7h")]
+transform = Transform3D(-2.87562, 0, 13.7015, 0, 14, 0, -13.7015, 0, -2.87562, -21.1459, 0.000500202, -17.7131)
+
+[node name="SpiderWeb2" parent="Trees6/Tree3" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(-0.000500699, 0.270463, 0.129806, -0.283204, 0.0423973, -0.0894308, -0.0989705, -0.122688, 0.25525, -0.0601387, 0.463254, -0.0969433)
+
+[node name="SpiderWeb3" parent="Trees6/Tree3" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.0695082, -0.252259, 0.146745, -0.285129, -0.0908575, -0.0211304, 0.0622109, -0.134575, -0.260805, 0.0276723, 0.463254, -0.0969433)
+
+[node name="SpiderWeb4" parent="Trees6/Tree3" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.077396, -0.225136, -0.0763132, -0.237607, -0.0757146, -0.0176087, -0.00725473, 0.0779817, -0.237416, 0.00706995, 0.463254, -0.278046)
+
+[node name="Trees7" type="Node3D" parent="."]
+transform = Transform3D(0.99866, 0, 0.0517434, 0, 1, 0, -0.0517434, 0, 0.99866, 63.122, 0, -0.683546)
+
+[node name="Tree" parent="Trees7" instance=ExtResource("10_gkj7h")]
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, -19.2104, 0.000500202, -12.5939)
+
+[node name="SpiderWeb2" parent="Trees7/Tree" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(-0.000500699, 0.270463, 0.129806, -0.283204, 0.0423973, -0.0894308, -0.0989705, -0.122688, 0.25525, -0.0601387, 0.463254, -0.0969433)
+
+[node name="SpiderWeb3" parent="Trees7/Tree" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.0695082, -0.252259, 0.146745, -0.285129, -0.0908575, -0.0211304, 0.0622109, -0.134575, -0.260805, 0.0276723, 0.463254, -0.0969433)
+
+[node name="SpiderWeb4" parent="Trees7/Tree" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.077396, -0.225136, -0.0763132, -0.237607, -0.0757146, -0.0176087, -0.00725473, 0.0779817, -0.237416, 0.00706995, 0.463254, -0.278046)
+
+[node name="Tree2" parent="Trees7" instance=ExtResource("10_gkj7h")]
+transform = Transform3D(-2.67703, 0, -7.5388, 0, 8, 0, 7.5388, 0, -2.67703, -21.5921, 0.000500202, -8.62606)
+
+[node name="SpiderWeb2" parent="Trees7/Tree2" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(-0.000500699, 0.270463, 0.129806, -0.283204, 0.0423973, -0.0894308, -0.0989705, -0.122688, 0.25525, -0.0601387, 0.463254, -0.0969433)
+
+[node name="SpiderWeb3" parent="Trees7/Tree2" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.0695082, -0.252259, 0.146745, -0.285129, -0.0908575, -0.0211304, 0.0622109, -0.134575, -0.260805, 0.0276723, 0.463254, -0.0969433)
+
+[node name="SpiderWeb4" parent="Trees7/Tree2" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.077396, -0.225136, -0.0763132, -0.237607, -0.0757146, -0.0176087, -0.00725473, 0.0779817, -0.237416, 0.00706995, 0.463254, -0.278046)
+
+[node name="Tree3" parent="Trees7" instance=ExtResource("10_gkj7h")]
+transform = Transform3D(-2.87562, 0, 13.7015, 0, 14, 0, -13.7015, 0, -2.87562, -21.1459, 0.000500202, -17.7131)
+
+[node name="SpiderWeb2" parent="Trees7/Tree3" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(-0.000500699, 0.270463, 0.129806, -0.283204, 0.0423973, -0.0894308, -0.0989705, -0.122688, 0.25525, -0.0601387, 0.463254, -0.0969433)
+
+[node name="SpiderWeb3" parent="Trees7/Tree3" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.0695082, -0.252259, 0.146745, -0.285129, -0.0908575, -0.0211304, 0.0622109, -0.134575, -0.260805, 0.0276723, 0.463254, -0.0969433)
+
+[node name="SpiderWeb4" parent="Trees7/Tree3" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.077396, -0.225136, -0.0763132, -0.237607, -0.0757146, -0.0176087, -0.00725473, 0.0779817, -0.237416, 0.00706995, 0.463254, -0.278046)
+
+[node name="Trees8" type="Node3D" parent="."]
+transform = Transform3D(0.969428, 0, 0.245375, 0, 1, 0, -0.245375, 0, 0.969428, 35.1746, 0, 42.7112)
+
+[node name="Tree" parent="Trees8" instance=ExtResource("10_gkj7h")]
+transform = Transform3D(10, 0, 0, 0, 10, 0, 0, 0, 10, -19.2104, 0.000500202, -12.5939)
+
+[node name="SpiderWeb2" parent="Trees8/Tree" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(-0.000500699, 0.270463, 0.129806, -0.283204, 0.0423973, -0.0894308, -0.0989705, -0.122688, 0.25525, -0.0601387, 0.463254, -0.0969433)
+
+[node name="SpiderWeb3" parent="Trees8/Tree" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.0695082, -0.252259, 0.146745, -0.285129, -0.0908575, -0.0211304, 0.0622109, -0.134575, -0.260805, 0.0276723, 0.463254, -0.0969433)
+
+[node name="SpiderWeb4" parent="Trees8/Tree" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.077396, -0.225136, -0.0763132, -0.237607, -0.0757146, -0.0176087, -0.00725473, 0.0779817, -0.237416, 0.00706995, 0.463254, -0.278046)
+
+[node name="Tree2" parent="Trees8" instance=ExtResource("10_gkj7h")]
+transform = Transform3D(-2.67703, 0, -7.5388, 0, 8, 0, 7.5388, 0, -2.67703, -21.5921, 0.000500202, -8.62606)
+
+[node name="SpiderWeb2" parent="Trees8/Tree2" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(-0.000500699, 0.270463, 0.129806, -0.283204, 0.0423973, -0.0894308, -0.0989705, -0.122688, 0.25525, -0.0601387, 0.463254, -0.0969433)
+
+[node name="SpiderWeb3" parent="Trees8/Tree2" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.0695082, -0.252259, 0.146745, -0.285129, -0.0908575, -0.0211304, 0.0622109, -0.134575, -0.260805, 0.0276723, 0.463254, -0.0969433)
+
+[node name="SpiderWeb4" parent="Trees8/Tree2" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.077396, -0.225136, -0.0763132, -0.237607, -0.0757146, -0.0176087, -0.00725473, 0.0779817, -0.237416, 0.00706995, 0.463254, -0.278046)
+
+[node name="Tree3" parent="Trees8" instance=ExtResource("10_gkj7h")]
+transform = Transform3D(-2.87562, 0, 13.7015, 0, 14, 0, -13.7015, 0, -2.87562, -21.1459, 0.000500202, -17.7131)
+
+[node name="SpiderWeb2" parent="Trees8/Tree3" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(-0.000500699, 0.270463, 0.129806, -0.283204, 0.0423973, -0.0894308, -0.0989705, -0.122688, 0.25525, -0.0601387, 0.463254, -0.0969433)
+
+[node name="SpiderWeb3" parent="Trees8/Tree3" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.0695082, -0.252259, 0.146745, -0.285129, -0.0908575, -0.0211304, 0.0622109, -0.134575, -0.260805, 0.0276723, 0.463254, -0.0969433)
+
+[node name="SpiderWeb4" parent="Trees8/Tree3" instance=ExtResource("11_i0cfi")]
+transform = Transform3D(0.077396, -0.225136, -0.0763132, -0.237607, -0.0757146, -0.0176087, -0.00725473, 0.0779817, -0.237416, 0.00706995, 0.463254, -0.278046)
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5, 0)
+shape = SubResource("BoxShape3D_65va2")
+
+[connection signal="button_down" from="ThrowingControls/Button" to="GameManager/StateMachine/Throwing" method="onMoveCameraStart"]
+[connection signal="button_up" from="ThrowingControls/Button" to="GameManager/StateMachine/Throwing" method="onMoveCameraStop"]
+[connection signal="pressed" from="ThrowingControls/Button" to="GameManager/StateMachine/Throwing" method="onMoveCameraHeld"]
+[connection signal="button_down" from="ThrowingControls/Button2" to="GameManager/StateMachine/Throwing" method="onThrowStart"]
+[connection signal="button_up" from="ThrowingControls/Button2" to="GameManager/StateMachine/Throwing" method="onThrowStop"]
+[connection signal="Transitioned" from="GameManager/StateMachine/Throwing" to="ThrowingControls" method="_on_throwing_transitioned"]
+[connection signal="Transitioned" from="GameManager/StateMachine/Rolling" to="ThrowingControls" method="_on_rolling_transitioned"]
+[connection signal="broke" from="Tombstones/Tombstone" to="GameManager" method="_on_tombstone_broke"]
+[connection signal="broke" from="Tombstones/Tombstone2" to="GameManager" method="_on_tombstone_broke"]
+[connection signal="broke" from="Tombstones/Tombstone3" to="GameManager" method="_on_tombstone_broke"]
+[connection signal="broke" from="Tombstones/Tombstone4" to="ThrowingControls" method="_on_tombstone_broke"]
+[connection signal="broke" from="Tombstones2/Tombstone" to="ThrowingControls" method="_on_tombstone_broke"]
+[connection signal="broke" from="Tombstones2/Tombstone2" to="ThrowingControls" method="_on_tombstone_broke"]
+[connection signal="broke" from="Tombstones2/Tombstone3" to="ThrowingControls" method="_on_tombstone_broke"]
+[connection signal="broke" from="Tombstones2/Tombstone4" to="ThrowingControls" method="_on_tombstone_broke"]
+[connection signal="body_entered" from="Area3D" to="GameManager" method="_on_area_3d_body_entered"]

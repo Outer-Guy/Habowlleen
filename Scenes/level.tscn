@@ -1,12 +1,14 @@
-[gd_scene load_steps=21 format=3 uid="uid://bbyyhve7ohnvb"]
+[gd_scene load_steps=25 format=3 uid="uid://bbyyhve7ohnvb"]
 
+[ext_resource type="Texture2D" uid="uid://cp1wstq5d67hq" path="res://Assets/Sprites/MainMenuPlaceholders/09061914596edf597a8165dd0959a92bc61b7ebe255cf722bcd8e852953445a1_200.png" id="1_15cum"]
 [ext_resource type="Script" path="res://Scripts/StateMachine.gd" id="1_agyfu"]
+[ext_resource type="Script" path="res://Scenes/GameManager.gd" id="1_v4sq5"]
 [ext_resource type="Environment" uid="uid://dtjphp6n2dyqi" path="res://Resources/new_environment.tres" id="2_mpolt"]
 [ext_resource type="Script" path="res://Scripts/Throwing.gd" id="2_ppytk"]
 [ext_resource type="Script" path="res://Scripts/Rolling.gd" id="3_1wa8q"]
 [ext_resource type="Texture2D" uid="uid://nuhvhnh4icff" path="res://Assets/Sprites/Cartoon_green_texture_grass.jpg" id="4_37gg2"]
 [ext_resource type="PackedScene" uid="uid://cqlerwdr1v0wx" path="res://Assets/3D Models/Pumpkin.fbx" id="4_otpve"]
-[ext_resource type="PackedScene" uid="uid://b3iu48o7bpma1" path="res://Assets/3D Models/JackLanternBody.fbx" id="5_t347p"]
+[ext_resource type="PackedScene" uid="uid://pvahi07fa2ds" path="res://Assets/3D Models/jack_lantern_body.tscn" id="5_uxlqd"]
 [ext_resource type="PackedScene" uid="uid://bnpm1j23xev16" path="res://Scenes/tombstone.tscn" id="8_u28u6"]
 [ext_resource type="PackedScene" path="res://Assets/Sprites/spider.tscn" id="9_7orq2"]
 [ext_resource type="PackedScene" path="res://Assets/Sprites/tree.tscn" id="10_gkj7h"]
@@ -16,12 +18,21 @@
 script/source = "extends Control
 
 signal hideThrowUI
+var hiden : bool
 
 func _on_throwing_transitioned():
-	print_debug(\"UIHidden\")
 	hide()
 	pass # Replace with function body.
+
+
+func _on_rolling_transitioned():
+	show()
+	print_debug(\"shown\")
+	pass # Replace with function body.
 "
+
+[sub_resource type="Theme" id="Theme_w83vj"]
+default_font_size = 60
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_54m6y"]
 albedo_color = Color(0.439216, 0.439216, 0.439216, 1)
@@ -143,7 +154,56 @@ func cameraSet(Target):
 	pass
 "
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_65va2"]
+size = Vector3(1000, 1, 1000)
+
 [node name="Level" type="Node3D"]
+
+[node name="ThrowingControls3" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchor_right = 1.002
+anchor_bottom = 1.0
+offset_right = -0.304077
+offset_bottom = -4.0
+script = SubResource("GDScript_3y0ym")
+
+[node name="Panel" type="Panel" parent="ThrowingControls3"]
+layout_mode = 0
+offset_left = -48.0
+offset_top = -16.0
+offset_right = -8.0
+offset_bottom = 24.0
+scale = Vector2(31.4715, 17.1387)
+
+[node name="RichTextLabel" type="RichTextLabel" parent="ThrowingControls3"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 6.8
+anchor_top = 0.01
+anchor_right = 11.52
+anchor_bottom = 0.846
+offset_left = -7579.2
+offset_top = 54.56
+offset_right = -7579.2
+offset_bottom = 54.616
+theme = SubResource("Theme_w83vj")
+text = "Points:
+"
+tab_size = 3
+
+[node name="Button" type="Button" parent="ThrowingControls3"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.087
+anchor_bottom = 0.161
+offset_left = 502.0
+offset_top = 422.0
+offset_right = 501.602
+offset_bottom = 422.316
+icon = ExtResource("1_15cum")
+vertical_icon_alignment = 0
+expand_icon = true
 
 [node name="ThrowingControls" type="Control" parent="."]
 layout_mode = 3
@@ -170,7 +230,44 @@ offset_top = 362.0
 offset_right = -483.68
 offset_bottom = -8.52002
 
+[node name="ThrowingControls2" type="Control" parent="."]
+layout_mode = 3
+anchor_right = 1.0
+anchor_bottom = 0.154
+offset_right = 1.99988
+offset_bottom = 544.208
+mouse_filter = 2
+script = SubResource("GDScript_3y0ym")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="ThrowingControls2"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 6.8
+anchor_top = 0.01
+anchor_right = 11.52
+anchor_bottom = 0.846
+offset_left = -7131.2
+offset_top = -5.44
+offset_right = -7167.08
+offset_bottom = -445.824
+theme = SubResource("Theme_w83vj")
+text = "Points:
+"
+tab_size = 3
+
+[node name="Button" type="Button" parent="ThrowingControls2"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.087
+anchor_bottom = 0.161
+offset_right = -0.398003
+offset_bottom = 0.315994
+icon = ExtResource("1_15cum")
+vertical_icon_alignment = 0
+expand_icon = true
+
 [node name="GameManager" type="Node" parent="."]
+script = ExtResource("1_v4sq5")
 
 [node name="StateMachine" type="Node" parent="GameManager" node_paths=PackedStringArray("initial_state")]
 script = ExtResource("1_agyfu")
@@ -178,7 +275,7 @@ initial_state = NodePath("Throwing")
 
 [node name="Throwing" type="Node" parent="GameManager/StateMachine"]
 script = ExtResource("2_ppytk")
-MouseSensitivity = 0.3
+MouseSensitivity = 0.2
 ThrowForce = 0.1
 
 [node name="Rolling" type="Node" parent="GameManager/StateMachine"]
@@ -208,8 +305,8 @@ collision_mask = 3
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player/BodyRigPoint/Body"]
 shape = SubResource("CylinderShape3D_7dvx1")
 
-[node name="JackLanternBody" parent="Player/BodyRigPoint/Body" instance=ExtResource("5_t347p")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+[node name="JackLanternBody" parent="Player/BodyRigPoint/Body" instance=ExtResource("5_uxlqd")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
 
 [node name="HeadRigPoint" type="Marker3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, -0.2, 0)
@@ -282,6 +379,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.48214, 0, -2.1225)
 
 [node name="Spider" parent="." instance=ExtResource("9_7orq2")]
 transform = Transform3D(8, 0, 0, 0, 8, 0, 0, 0, 8, -10.0239, 0.000500679, -3.14909)
+visible = false
 
 [node name="Spider2" parent="." instance=ExtResource("9_7orq2")]
 transform = Transform3D(5.0453, 0, -6.20846, 0, 8, 0, 6.20846, 0, 5.0453, -10.0239, 0.000500679, -23.3143)
@@ -603,10 +701,28 @@ transform = Transform3D(0.0695082, -0.252259, 0.146745, -0.285129, -0.0908575, -
 [node name="SpiderWeb4" parent="Trees8/Tree3" instance=ExtResource("11_i0cfi")]
 transform = Transform3D(0.077396, -0.225136, -0.0763132, -0.237607, -0.0757146, -0.0176087, -0.00725473, 0.0779817, -0.237416, 0.00706995, 0.463254, -0.278046)
 
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -5, 0)
+shape = SubResource("BoxShape3D_65va2")
+
+[connection signal="button_down" from="ThrowingControls3/Button" to="GameManager" method="_on_Back_To_Menu"]
 [connection signal="button_down" from="ThrowingControls/Button" to="GameManager/StateMachine/Throwing" method="onMoveCameraStart"]
 [connection signal="button_up" from="ThrowingControls/Button" to="GameManager/StateMachine/Throwing" method="onMoveCameraStop"]
 [connection signal="pressed" from="ThrowingControls/Button" to="GameManager/StateMachine/Throwing" method="onMoveCameraHeld"]
 [connection signal="button_down" from="ThrowingControls/Button2" to="GameManager/StateMachine/Throwing" method="onThrowStart"]
 [connection signal="button_up" from="ThrowingControls/Button2" to="GameManager/StateMachine/Throwing" method="onThrowStop"]
+[connection signal="button_down" from="ThrowingControls2/Button" to="GameManager" method="_on_button_button_down"]
 [connection signal="Transitioned" from="GameManager/StateMachine/Throwing" to="ThrowingControls" method="_on_throwing_transitioned"]
-[connection signal="Transitioned" from="GameManager/StateMachine/Rolling" to="ThrowingControls" method="_on_rolling_transitioned"]
+[connection signal="Transitioned" from="GameManager/StateMachine/Rolling" to="ThrowingControls2" method="_on_rolling_transitioned"]
+[connection signal="Transitioned" from="GameManager/StateMachine/Rolling" to="GameManager" method="_on_rolling_transitioned"]
+[connection signal="broke" from="Tombstones/Tombstone" to="GameManager" method="_on_tombstone_broke"]
+[connection signal="broke" from="Tombstones/Tombstone2" to="GameManager" method="_on_tombstone_broke"]
+[connection signal="broke" from="Tombstones/Tombstone3" to="GameManager" method="_on_tombstone_broke"]
+[connection signal="broke" from="Tombstones/Tombstone4" to="GameManager" method="_on_tombstone_broke"]
+[connection signal="broke" from="Tombstones2/Tombstone" to="GameManager" method="_on_tombstone_broke"]
+[connection signal="broke" from="Tombstones2/Tombstone2" to="GameManager" method="_on_tombstone_broke"]
+[connection signal="broke" from="Tombstones2/Tombstone3" to="GameManager" method="_on_tombstone_broke"]
+[connection signal="broke" from="Tombstones2/Tombstone4" to="GameManager" method="_on_tombstone_broke"]
+[connection signal="body_entered" from="Area3D" to="GameManager" method="_on_area_3d_body_entered"]

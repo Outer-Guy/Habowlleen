@@ -7,6 +7,8 @@
 size = Vector3(0.742, 1.9, 1.327)
 
 [node name="Tombstone" type="RigidBody3D"]
+max_contacts_reported = 5
+contact_monitor = true
 script = ExtResource("1_u2fxo")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]

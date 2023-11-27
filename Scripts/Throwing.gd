@@ -22,12 +22,15 @@ func Enter():
 	
 	camera.movSmoothing = 10
 	camera.movSpeed = 4
-	camera.rotSmoothing = 20
+	camera.rotSmoothing = 5
 	camera.rotSpeed = 1
 	var playerHead = player.get_node("HeadRigPoint/Head")
 	var playerHeadPoint = player.get_node("HeadRigPoint")
 	playerHead.position = playerHeadPoint.position
 	playerHead.rotation = playerHeadPoint.rotation
+	playerHead.linear_velocity = Vector3.ZERO
+	playerHead.angular_velocity = Vector3.ZERO
+
 	playerHead.gravity_scale = 0
 	pass
 	
