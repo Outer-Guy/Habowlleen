@@ -79,6 +79,8 @@ func onThrowStop():
 		var playerhead = player.get_node("HeadRigPoint/Head")
 		playerhead.apply_impulse(-playerhead.global_transform.basis.z * ThrowForce * (newMousePosition.y - mousePosition.y))
 		playerhead.gravity_scale = 1
+		var playerRemote = player.get_node("HeadRigPoint/RemoteHead")
+		#playerRemote.setState()
 		get_parent().on_child_transition(self,"Rolling")
 	pass
 	

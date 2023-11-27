@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://nuhvhnh4icff" path="res://Assets/Sprites/Cartoon_green_texture_grass.jpg" id="4_37gg2"]
 [ext_resource type="PackedScene" uid="uid://cqlerwdr1v0wx" path="res://Assets/3D Models/Pumpkin.fbx" id="4_otpve"]
 [ext_resource type="PackedScene" uid="uid://b3iu48o7bpma1" path="res://Assets/3D Models/JackLanternBody.fbx" id="5_t347p"]
-[ext_resource type="PackedScene" uid="uid://bnpm1j23xev16" path="res://Scenes/tombstone.tscn" id="8_u28u6"]
+[ext_resource type="PackedScene" path="res://Scenes/tombstone.tscn" id="8_u28u6"]
 [ext_resource type="PackedScene" path="res://Assets/Sprites/spider.tscn" id="9_7orq2"]
 [ext_resource type="PackedScene" path="res://Assets/Sprites/tree.tscn" id="10_gkj7h"]
 [ext_resource type="PackedScene" path="res://Assets/3D Models/spider_web_2.tscn" id="11_i0cfi"]
@@ -63,9 +63,9 @@ func _ready():
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	look_at(playerHead.global_position + playerHead.linear_velocity * Vector3(0,0,1), Vector3.UP)
+	#look_at(playerHead.global_position + playerHead.linear_velocity * Vector3(0,0,1), Vector3.UP)
 	#rotate_y(0.01)
-	#print_debug(position - playerHead.position)
+	print_debug(position - playerHead.position)
 	position = playerHead.position
 	forwardSpeed = playerHead.linear_velocity * transform.basis
 	
@@ -104,17 +104,10 @@ func Enter():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func cameraStep(delta):
 	
-	var _origin = global_transform.origin
-	var _basis = global_transform.basis
-	var offset = lerp(Vector3.ZERO, (Target.global_position) - _origin, movSmoothing * delta) * movSpeed
-	_origin = _origin + offset
-	#rotate_y(lerp_angle(deg_to_rad(rotation.y), deg_to_rad(Target.rotation.y), rotSmoothing * delta))
-	_basis =Target.basis
-	#_basis = _basis.slerp(Target.basis, rotSmoothing * delta)
-	var trans = Transform3D(_basis, _origin)
-	global_transform = trans
-	#rotation = lerp_angle(rotation.y, Target.rotation.y, rotSmoothing * delta)
-	#print_debug(rotation, \", \", Target.rotation)
+	var offset = lerp(Vector3.ZERO, (Target.global_position) - global_position, movSmoothing * delta) * movSpeed
+	translate(offset)
+	transform.basis = transform.basis.orthonormalized().slerp(Target.basis.orthonormalized(), rotSmoothing * delta)
+	print_debug(rotation, \", \", Target.rotation)
 	camera.cameraSet(springarm.global_position)
 	pass
 	
@@ -179,7 +172,7 @@ initial_state = NodePath("Throwing")
 [node name="Throwing" type="Node" parent="GameManager/StateMachine"]
 script = ExtResource("2_ppytk")
 MouseSensitivity = 0.3
-ThrowForce = 0.1
+ThrowForce = 0.3
 
 [node name="Rolling" type="Node" parent="GameManager/StateMachine"]
 script = ExtResource("3_1wa8q")
@@ -215,25 +208,23 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, -0.2, 0)
 
 [node name="RemoteHead" type="Marker3D" parent="Player/HeadRigPoint"]
-transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 0)
 script = SubResource("GDScript_p5bsg")
+
+[node name="Pumpkin" parent="Player/HeadRigPoint/RemoteHead" instance=ExtResource("4_otpve")]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0.00653684, 0.00299799, 0)
 
 [node name="Head" type="RigidBody3D" parent="Player/HeadRigPoint"]
 collision_layer = 3
 collision_mask = 3
 continuous_cd = true
-linear_damp = 0.05
-angular_damp = 0.01
-
-[node name="Pumpkin" parent="Player/HeadRigPoint/Head" instance=ExtResource("4_otpve")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0.00299799, -0.00653684)
+linear_damp = 0.1
+angular_damp = 0.2
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player/HeadRigPoint/Head"]
 shape = SubResource("SphereShape3D_s2ec4")
 
 [node name="CameraPivot" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
-visible = false
 script = SubResource("GDScript_c5rdu")
 
 [node name="SpringArm3D" type="SpringArm3D" parent="CameraPivot"]

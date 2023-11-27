@@ -15,9 +15,13 @@ func Enter():
 	camera.setCameraLenght(3)
 	
 	camera.movSmoothing = 10
-	camera.movSpeed = 1
+	camera.movSpeed = 4
 	camera.rotSmoothing = 20
 	camera.rotSpeed = 1
+	#camera.movSmoothing = 50
+	#camera.movSpeed = 1
+	#camera.rotSmoothing = 50
+	#camera.rotSpeed = 1
 	camera.fovSmoothing = 20
 	ThrownSpeed = camera.Target.forwardSpeed
 	print_debug("started")
@@ -28,8 +32,8 @@ func Exit():
 	
 func Update(delta: float):
 	camera.cameraStep(delta)
-	camera.FOVchange(90 - camera.Target.forwardSpeed.z / 15)
-	camera.setCameraLenght(3 - camera.Target.forwardSpeed.z / 200)
+	#camera.FOVchange(90 - camera.Target.forwardSpeed.z / 15)
+	#camera.setCameraLenght(3 - camera.Target.forwardSpeed.z / 200)
 	
 	pass
 	
