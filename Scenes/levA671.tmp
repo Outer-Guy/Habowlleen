@@ -1,0 +1,236 @@
+[gd_scene load_steps=13 format=3 uid="uid://bbyyhve7ohnvb"]
+
+[ext_resource type="Script" path="res://Scripts/StateMachine.gd" id="1_agyfu"]
+[ext_resource type="Environment" uid="uid://dtjphp6n2dyqi" path="res://Resources/new_environment.tres" id="2_mpolt"]
+[ext_resource type="Script" path="res://Scripts/Throwing.gd" id="2_ppytk"]
+[ext_resource type="Script" path="res://Scripts/Rolling.gd" id="3_1wa8q"]
+
+[sub_resource type="GDScript" id="GDScript_3y0ym"]
+script/source = "extends Control
+
+signal hideThrowUI
+
+func _on_throwing_transitioned():
+	print_debug(\"UIHidden\")
+	hide()
+	pass # Replace with function body.
+"
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ix130"]
+size = Vector3(100, 0.001, 100)
+
+[sub_resource type="GDScript" id="GDScript_wdwvq"]
+script/source = "extends Node3D
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	pass
+"
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_7dvx1"]
+
+[sub_resource type="GDScript" id="GDScript_p5bsg"]
+script/source = "extends Marker3D
+
+var player
+var playerHead
+var forwardSpeed
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	player = get_node(\"/root/Level/Player\")
+	playerHead = get_node(\"/root/Level/Player/HeadRigPoint/Head\")
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	look_at(playerHead.global_position + playerHead.linear_velocity * Vector3(0,0.4,1), Vector3.UP)
+	position = playerHead.position
+	forwardSpeed = playerHead.linear_velocity * transform.basis
+	
+	pass
+"
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_s2ec4"]
+
+[sub_resource type="GDScript" id="GDScript_c5rdu"]
+script/source = "extends Node3D
+
+var Target : Node3D
+var targetOffset : Vector3
+
+var movSmoothing : float
+var movSpeed : float
+
+var rotSmoothing : float
+var rotSpeed : float
+
+var fovSmoothing
+var cameraLenght
+
+var springarm
+var camera
+
+# Called when the node enters the scene tree for the first time.
+func Enter():
+	camera = get_node(\"SpringArm3D/Camera3D\")
+	springarm = get_node(\"SpringArm3D\")
+	springarm.position = targetOffset
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func cameraStep(delta):
+	
+	var offset = lerp(Vector3.ZERO, (Target.global_position) - global_position, movSmoothing * delta) * movSpeed
+	translate(offset)
+	#transform.basis = transform.basis.orthonormalized().slerp(Target.basis, rotSmoothing * delta)
+	rotation.y += lerp(0, rotation.y - Target.rotation.y, rotSmoothing * delta)
+	print_debug(rotation, \", \", Target.rotation)
+	camera.cameraSet(springarm.global_position)
+	pass
+	
+func setCameraLenght(lenght : float):
+	cameraLenght = lenght
+	springarm.spring_length = lenght
+	camera.position = Vector3(0,0,lenght)
+	
+func setCameraOffset(offset : Vector3):
+	targetOffset = offset
+	springarm.position = targetOffset
+
+func FOVchange(newFoV : float):
+	camera.fov = lerp(camera.fov,newFoV, fovSmoothing * get_process_delta_time())
+	pass
+	
+"
+
+[sub_resource type="GDScript" id="GDScript_7g40a"]
+script/source = "extends Camera3D
+
+
+# Called when the node enters the scene tree for the first time.
+func cameraSet(Target):
+	look_at_from_position(global_position, Target, Vector3.UP)
+	pass
+"
+
+[node name="Level" type="Node3D"]
+
+[node name="ThrowingControls" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = SubResource("GDScript_3y0ym")
+
+[node name="Button" type="Button" parent="ThrowingControls"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 28.817
+anchor_bottom = 16.263
+offset_right = 1.31995
+offset_bottom = -8.52002
+
+[node name="Button2" type="Button" parent="ThrowingControls"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 28.817
+anchor_bottom = 16.263
+offset_left = 370.0
+offset_top = 362.0
+offset_right = -483.68
+offset_bottom = -8.52002
+
+[node name="GameManager" type="Node" parent="."]
+
+[node name="StateMachine" type="Node" parent="GameManager" node_paths=PackedStringArray("initial_state")]
+script = ExtResource("1_agyfu")
+initial_state = NodePath("Throwing")
+
+[node name="Throwing" type="Node" parent="GameManager/StateMachine"]
+script = ExtResource("2_ppytk")
+MouseSensitivity = 0.3
+ThrowForce = 0.1
+
+[node name="Rolling" type="Node" parent="GameManager/StateMachine"]
+script = ExtResource("3_1wa8q")
+
+[node name="Floor" type="StaticBody3D" parent="."]
+collision_layer = 7
+collision_mask = 7
+
+[node name="CSGBox3D" type="CSGBox3D" parent="Floor"]
+size = Vector3(100, 0.002, 100)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
+shape = SubResource("BoxShape3D_ix130")
+
+[node name="Player" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+script = SubResource("GDScript_wdwvq")
+
+[node name="BodyRigPoint" type="Marker3D" parent="Player"]
+
+[node name="Body" type="CharacterBody3D" parent="Player/BodyRigPoint"]
+collision_layer = 3
+collision_mask = 3
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player/BodyRigPoint/Body"]
+shape = SubResource("CylinderShape3D_7dvx1")
+
+[node name="Body" type="CSGCylinder3D" parent="Player/BodyRigPoint/Body"]
+
+[node name="HeadRigPoint" type="Marker3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, -0.2, 0)
+
+[node name="RemoteHead" type="Marker3D" parent="Player/HeadRigPoint"]
+script = SubResource("GDScript_p5bsg")
+
+[node name="Head" type="RigidBody3D" parent="Player/HeadRigPoint"]
+collision_layer = 3
+collision_mask = 3
+continuous_cd = true
+linear_damp = 0.1
+angular_damp = 0.2
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player/HeadRigPoint/Head"]
+shape = SubResource("SphereShape3D_s2ec4")
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="Player/HeadRigPoint/Head"]
+transform = Transform3D(2.37, 0, 0, 0, 1.37, 0, 0, 0, 0.865, 0, 0, 0)
+
+[node name="CameraPivot" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+script = SubResource("GDScript_c5rdu")
+
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraPivot"]
+transform = Transform3D(1, 0, 1.74846e-07, 0, 1, 0, -1.74846e-07, 0, 1, 0, 0, 0)
+collision_mask = 4
+spring_length = 5.0
+margin = 0.1
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivot/SpringArm3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5)
+environment = ExtResource("2_mpolt")
+fov = 90.0
+script = SubResource("GDScript_7g40a")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.538961, 0.541675, -0.645065, 0.122788, 0.707107, 0.696364, 0.833333, -0.454519, 0.314592, 0, 5.5, 0)
+shadow_enabled = true
+
+[connection signal="button_down" from="ThrowingControls/Button" to="GameManager/StateMachine/Throwing" method="onMoveCameraStart"]
+[connection signal="button_up" from="ThrowingControls/Button" to="GameManager/StateMachine/Throwing" method="onMoveCameraStop"]
+[connection signal="pressed" from="ThrowingControls/Button" to="GameManager/StateMachine/Throwing" method="onMoveCameraHeld"]
+[connection signal="button_down" from="ThrowingControls/Button2" to="GameManager/StateMachine/Throwing" method="onThrowStart"]
+[connection signal="button_up" from="ThrowingControls/Button2" to="GameManager/StateMachine/Throwing" method="onThrowStop"]
+[connection signal="Transitioned" from="GameManager/StateMachine/Throwing" to="ThrowingControls" method="_on_throwing_transitioned"]
+[connection signal="Transitioned" from="GameManager/StateMachine/Rolling" to="ThrowingControls" method="_on_rolling_transitioned"]
