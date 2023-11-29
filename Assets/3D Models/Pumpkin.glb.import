@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://cqlerwdr1v0wx"
-path="res://.godot/imported/Pumpkin.fbx-08c4f73f8e08cfc48d1c5856f71ff3ed.scn"
+uid="uid://0427ir16tsk1"
+path="res://.godot/imported/Pumpkin.glb-7ffeda2f9cdf8543c40a379d17ce2120.scn"
 
 [deps]
 
-source_file="res://Assets/3D Models/Pumpkin.fbx"
-dest_files=["res://.godot/imported/Pumpkin.fbx-08c4f73f8e08cfc48d1c5856f71ff3ed.scn"]
+source_file="res://Assets/3D Models/Pumpkin.glb"
+dest_files=["res://.godot/imported/Pumpkin.glb-7ffeda2f9cdf8543c40a379d17ce2120.scn"]
 
 [params]
 

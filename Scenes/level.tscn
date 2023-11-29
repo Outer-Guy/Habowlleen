@@ -7,12 +7,12 @@
 [ext_resource type="Script" path="res://Scripts/Throwing.gd" id="2_ppytk"]
 [ext_resource type="Script" path="res://Scripts/Rolling.gd" id="3_1wa8q"]
 [ext_resource type="Texture2D" uid="uid://nuhvhnh4icff" path="res://Assets/Sprites/Cartoon_green_texture_grass.jpg" id="4_37gg2"]
-[ext_resource type="PackedScene" uid="uid://cqlerwdr1v0wx" path="res://Assets/3D Models/Pumpkin.fbx" id="4_otpve"]
-[ext_resource type="PackedScene" uid="uid://pvahi07fa2ds" path="res://Assets/3D Models/jack_lantern_body.tscn" id="5_uxlqd"]
-[ext_resource type="PackedScene" uid="uid://bnpm1j23xev16" path="res://Scenes/tombstone.tscn" id="8_u28u6"]
+[ext_resource type="PackedScene" uid="uid://c6nsib5d7qjao" path="res://Assets/3D Models/raider_body.tscn" id="7_p2t0e"]
+[ext_resource type="PackedScene" uid="uid://bf3wcsm34e5od" path="res://Assets/3D Models/pumpkin.tscn" id="7_xbwk3"]
+[ext_resource type="PackedScene" uid="uid://2xk4b0a83vdi" path="res://Scenes/tombstone.tscn" id="8_u28u6"]
 [ext_resource type="PackedScene" path="res://Assets/Sprites/spider.tscn" id="9_7orq2"]
 [ext_resource type="PackedScene" path="res://Assets/Sprites/tree.tscn" id="10_gkj7h"]
-[ext_resource type="PackedScene" path="res://Assets/3D Models/spider_web_2.tscn" id="11_i0cfi"]
+[ext_resource type="PackedScene" uid="uid://7tpfq2broara" path="res://Assets/3D Models/spider_web_2.tscn" id="11_i0cfi"]
 
 [sub_resource type="GDScript" id="GDScript_3y0ym"]
 script/source = "extends Control
@@ -84,7 +84,7 @@ func _process(delta):
 "
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_s2ec4"]
-radius = 0.864483
+radius = 0.519066
 
 [sub_resource type="GDScript" id="GDScript_c5rdu"]
 script/source = "extends Node3D
@@ -305,8 +305,8 @@ collision_mask = 3
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player/BodyRigPoint/Body"]
 shape = SubResource("CylinderShape3D_7dvx1")
 
-[node name="JackLanternBody" parent="Player/BodyRigPoint/Body" instance=ExtResource("5_uxlqd")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)
+[node name="RaiderBody" parent="Player/BodyRigPoint/Body" instance=ExtResource("7_p2t0e")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.04116, 0.262696)
 
 [node name="HeadRigPoint" type="Marker3D" parent="Player"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, -0.2, 0)
@@ -316,17 +316,17 @@ transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 0, 0, 
 script = SubResource("GDScript_p5bsg")
 
 [node name="Head" type="RigidBody3D" parent="Player/HeadRigPoint"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0122032, 0, 0)
 collision_layer = 3
 collision_mask = 3
 continuous_cd = true
 linear_damp = 0.05
 angular_damp = 0.01
 
-[node name="Pumpkin" parent="Player/HeadRigPoint/Head" instance=ExtResource("4_otpve")]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0.00299799, -0.00653684)
-
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player/HeadRigPoint/Head"]
 shape = SubResource("SphereShape3D_s2ec4")
+
+[node name="Pumpkin" parent="Player/HeadRigPoint/Head" instance=ExtResource("7_xbwk3")]
 
 [node name="CameraPivot" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2, 0)

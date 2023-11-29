@@ -1,5 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://bv5sfrj2w7ou4"]
+[gd_scene load_steps=2 format=3 uid="uid://bf3wcsm34e5od"]
 
-[ext_resource type="PackedScene" uid="uid://cqlerwdr1v0wx" path="res://Assets/3D Models/Pumpkin.fbx" id="1_s86pf"]
+[ext_resource type="PackedScene" uid="uid://0427ir16tsk1" path="res://Assets/3D Models/Pumpkin.glb" id="1_afmdi"]
 
-[node name="Pumpkin" instance=ExtResource("1_s86pf")]
+[node name="Pumpkin" instance=ExtResource("1_afmdi")]
+
+[node name="Pumpkin2" parent="." index="0"]
+transform = Transform3D(-2.18557e-08, 0, 0.5, 0, 0.449, 0, -0.5, 0, -2.18557e-08, 0, 0, 0)

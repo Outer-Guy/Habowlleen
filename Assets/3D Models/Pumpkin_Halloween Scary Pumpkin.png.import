@@ -2,8 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dphi3a3wua6yu"
-path.s3tc="res://.godot/imported/SpiderWeb-42bc30ad2243bc4c95853f59d6c42d36_Jack by inSOLense on DeviantArt.png-8e8b6b61bb43adc321a0e931a22bf6cd.s3tc.ctex"
+uid="uid://6ctwom63pmcx"
+path.s3tc="res://.godot/imported/Pumpkin_Halloween Scary Pumpkin.png-da24159229aac9512b546874801bbcf2.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
 "vram_texture": true
@@ -12,8 +12,8 @@ generator_parameters={}
 
 [deps]
 
-source_file="res://Assets/3D Models/SpiderWeb-42bc30ad2243bc4c95853f59d6c42d36_Jack by inSOLense on DeviantArt.png"
-dest_files=["res://.godot/imported/SpiderWeb-42bc30ad2243bc4c95853f59d6c42d36_Jack by inSOLense on DeviantArt.png-8e8b6b61bb43adc321a0e931a22bf6cd.s3tc.ctex"]
+source_file="res://Assets/3D Models/Pumpkin_Halloween Scary Pumpkin.png"
+dest_files=["res://.godot/imported/Pumpkin_Halloween Scary Pumpkin.png-da24159229aac9512b546874801bbcf2.s3tc.ctex"]
 
 [params]
 

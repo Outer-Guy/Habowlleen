@@ -3,13 +3,13 @@
 importer="scene"
 importer_version=1
 type="PackedScene"
-uid="uid://b3iu48o7bpma1"
-path="res://.godot/imported/JackLanternBody.fbx-cdcbd60932c2eabd5820683e28531ab1.scn"
+uid="uid://cpxnxhkhk0xs2"
+path="res://.godot/imported/RaiderBody.glb-5bb01b5b5cce1e94ac7bcfa168c175c4.scn"
 
 [deps]
 
-source_file="res://Assets/3D Models/JackLanternBody.fbx"
-dest_files=["res://.godot/imported/JackLanternBody.fbx-cdcbd60932c2eabd5820683e28531ab1.scn"]
+source_file="res://Assets/3D Models/RaiderBody.glb"
+dest_files=["res://.godot/imported/RaiderBody.glb-5bb01b5b5cce1e94ac7bcfa168c175c4.scn"]
 
 [params]
 
