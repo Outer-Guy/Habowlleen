@@ -1,10 +1,12 @@
-[gd_scene load_steps=25 format=3 uid="uid://bbyyhve7ohnvb"]
+[gd_scene load_steps=27 format=3 uid="uid://bbyyhve7ohnvb"]
 
 [ext_resource type="Texture2D" uid="uid://cp1wstq5d67hq" path="res://Assets/Sprites/MainMenuPlaceholders/09061914596edf597a8165dd0959a92bc61b7ebe255cf722bcd8e852953445a1_200.png" id="1_15cum"]
 [ext_resource type="Script" path="res://Scripts/StateMachine.gd" id="1_agyfu"]
 [ext_resource type="Script" path="res://Scenes/GameManager.gd" id="1_v4sq5"]
+[ext_resource type="Texture2D" uid="uid://d1s4mdi3lamcf" path="res://Assets/Sprites/BackArrow.png" id="2_fs0f5"]
 [ext_resource type="Environment" uid="uid://dtjphp6n2dyqi" path="res://Resources/new_environment.tres" id="2_mpolt"]
 [ext_resource type="Script" path="res://Scripts/Throwing.gd" id="2_ppytk"]
+[ext_resource type="Texture2D" uid="uid://c0hiv8m5e8cix" path="res://Assets/Sprites/PointLabel.png" id="2_wqoy8"]
 [ext_resource type="Script" path="res://Scripts/Rolling.gd" id="3_1wa8q"]
 [ext_resource type="Texture2D" uid="uid://nuhvhnh4icff" path="res://Assets/Sprites/Cartoon_green_texture_grass.jpg" id="4_37gg2"]
 [ext_resource type="PackedScene" uid="uid://c6nsib5d7qjao" path="res://Assets/3D Models/raider_body.tscn" id="7_p2t0e"]
@@ -239,6 +241,11 @@ offset_bottom = 544.208
 mouse_filter = 2
 script = SubResource("GDScript_3y0ym")
 
+[node name="PointLabel" type="Sprite2D" parent="ThrowingControls2"]
+position = Vector2(933.25, 79)
+scale = Vector2(1.40637, 1.45455)
+texture = ExtResource("2_wqoy8")
+
 [node name="RichTextLabel" type="RichTextLabel" parent="ThrowingControls2"]
 layout_mode = 1
 anchors_preset = -1
@@ -246,25 +253,30 @@ anchor_left = 6.8
 anchor_top = 0.01
 anchor_right = 11.52
 anchor_bottom = 0.846
-offset_left = -7131.2
-offset_top = -5.44
-offset_right = -7167.08
-offset_bottom = -445.824
+offset_left = -6883.2
+offset_top = 16.56
+offset_right = -12194.1
+offset_bottom = -423.824
 theme = SubResource("Theme_w83vj")
-text = "Points:
+text = "
 "
 tab_size = 3
 
-[node name="Button" type="Button" parent="ThrowingControls2"]
+[node name="BackButton" type="Button" parent="ThrowingControls2"]
+visible = false
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.087
 anchor_bottom = 0.161
 offset_right = -0.398003
 offset_bottom = 0.315994
-icon = ExtResource("1_15cum")
 vertical_icon_alignment = 0
 expand_icon = true
+
+[node name="BackArrow" type="Sprite2D" parent="ThrowingControls2"]
+position = Vector2(46.375, 49.6935)
+scale = Vector2(0.735185, 0.732536)
+texture = ExtResource("2_fs0f5")
 
 [node name="GameManager" type="Node" parent="."]
 script = ExtResource("1_v4sq5")
@@ -713,7 +725,7 @@ shape = SubResource("BoxShape3D_65va2")
 [connection signal="pressed" from="ThrowingControls/Button" to="GameManager/StateMachine/Throwing" method="onMoveCameraHeld"]
 [connection signal="button_down" from="ThrowingControls/Button2" to="GameManager/StateMachine/Throwing" method="onThrowStart"]
 [connection signal="button_up" from="ThrowingControls/Button2" to="GameManager/StateMachine/Throwing" method="onThrowStop"]
-[connection signal="button_down" from="ThrowingControls2/Button" to="GameManager" method="_on_button_button_down"]
+[connection signal="button_down" from="ThrowingControls2/BackButton" to="GameManager" method="_on_button_button_down"]
 [connection signal="Transitioned" from="GameManager/StateMachine/Throwing" to="ThrowingControls" method="_on_throwing_transitioned"]
 [connection signal="Transitioned" from="GameManager/StateMachine/Rolling" to="ThrowingControls2" method="_on_rolling_transitioned"]
 [connection signal="Transitioned" from="GameManager/StateMachine/Rolling" to="GameManager" method="_on_rolling_transitioned"]
