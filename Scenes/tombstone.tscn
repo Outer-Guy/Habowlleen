@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://bnpm1j23xev16"]
+[gd_scene load_steps=8 format=3 uid="uid://bnpm1j23xev16"]
 
 [ext_resource type="Script" path="res://Scenes/tombstone.gd" id="1_u2fxo"]
 [ext_resource type="PackedScene" uid="uid://c8kkk01i4th4g" path="res://Assets/3D Models/Lapida.fbx" id="1_uu0pp"]
@@ -6,6 +6,27 @@
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_rwi4o"]
 size = Vector3(0.742, 1.9, 1.327)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_wmx0i"]
+lifetime_randomness = 0.05
+direction = Vector3(1, 1.45, 0)
+spread = 74.27
+flatness = 0.16
+initial_velocity_min = 1.0
+initial_velocity_max = 10.0
+linear_accel_min = -1.94
+damping_min = 3.397
+damping_max = 3.397
+angle_min = -90.0
+angle_max = 90.0
+scale_min = 2.0
+scale_max = 8.0
+
+[sub_resource type="PrismMesh" id="PrismMesh_i7ekp"]
+left_to_right = 1.5
+size = Vector3(0.05, 0.05, 0.05)
+
+[sub_resource type="Skin" id="Skin_lfgj4"]
 
 [node name="Tombstone" type="RigidBody3D"]
 max_contacts_reported = 5
@@ -21,5 +42,16 @@ transform = Transform3D(8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0)
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3_os2h6")
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -9.68575e-08)
+emitting = false
+amount = 16
+lifetime = 3.0
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_wmx0i")
+draw_pass_1 = SubResource("PrismMesh_i7ekp")
+draw_skin = SubResource("Skin_lfgj4")
 
 [connection signal="body_shape_entered" from="." to="." method="_on_body_shape_entered"]

@@ -1,6 +1,6 @@
 extends Control
 
-func _ready()
+func _ready():
 	get_node("Song").play()
 
 	pass

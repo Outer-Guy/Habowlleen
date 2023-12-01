@@ -19,4 +19,5 @@ func _on_body_shape_entered(body_rid, body, body_shape_index, local_shape_index)
 		broken = true
 		broke.emit()
 		get_node("AudioStreamPlayer").play()
+		get_node("GPUParticles3D").emitting = true
 	pass # Replace with function body.

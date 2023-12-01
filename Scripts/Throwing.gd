@@ -8,6 +8,9 @@ var camera
 var heldCamera : bool
 var heldThrow : bool
 var mousePosition
+var throwTimmer
+var prepareThrow
+var inputForce
 
 func _ready():
 	player = get_node("/root/Level/Player")
@@ -30,7 +33,11 @@ func Enter():
 	playerHead.rotation = playerHeadPoint.rotation
 	playerHead.linear_velocity = Vector3.ZERO
 	playerHead.angular_velocity = Vector3.ZERO
-
+	
+	inputForce = 0
+	throwTimmer = 0.3
+	prepareThrow = false
+	
 	playerHead.gravity_scale = 0
 	pass
 	
@@ -51,6 +58,22 @@ func Update(delta: float):
 		var newMousePosition = get_viewport().get_mouse_position()
 		if newMousePosition.y < mousePosition.y:
 			mousePosition = newMousePosition
+	
+	if prepareThrow == true:
+		if throwTimmer <= 0:
+			print_debug(throwTimmer)
+			
+			var playerhead = player.get_node("HeadRigPoint/Head")
+			playerhead.apply_impulse(-playerhead.global_transform.basis.z * ThrowForce * inputForce)
+			playerhead.gravity_scale = 1
+			var playerRemote = player.get_node("HeadRigPoint/RemoteHead")
+			get_parent().get_node("BallRolling").play()
+			#playerRemote.setState()
+			get_parent().on_child_transition(self,"Rolling")
+		else:
+			print_debug(throwTimmer)
+			throwTimmer -= delta
+		
 		pass
 		
 	
@@ -78,15 +101,9 @@ func onThrowStop():
 	if (newMousePosition.y - mousePosition.y) < 20:
 		mousePosition = null
 	else: 
-		
-		var playerhead = player.get_node("HeadRigPoint/Head")
-		playerhead.apply_impulse(-playerhead.global_transform.basis.z * ThrowForce * (newMousePosition.y - mousePosition.y))
-		playerhead.gravity_scale = 1
-		var playerRemote = player.get_node("HeadRigPoint/RemoteHead")
-		get_parent().get_node("BallRolling").play()
+		prepareThrow = true
+		inputForce = (newMousePosition.y - mousePosition.y)
 		player.get_node("BodyRigPoint/Body/JackLantern").ShootBall()
-		#playerRemote.setState()
-		get_parent().on_child_transition(self,"Rolling")
 	pass
 	
 	
