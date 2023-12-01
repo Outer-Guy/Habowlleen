@@ -1,0 +1,35 @@
+[gd_scene load_steps=3 format=3 uid="uid://cff0ay3atur6j"]
+
+[ext_resource type="PackedScene" uid="uid://jyfw4xhf0h8d" path="res://Assets/3D Models/JackLantern.glb" id="1_ytvoi"]
+
+[sub_resource type="GDScript" id="GDScript_3hrqf"]
+script/source = "extends Node3D
+
+
+func ShootBall():
+	get_node(\"AnimationPlayer\").play(\"ShootBall\")
+	pass
+"
+
+[node name="JackLantern" instance=ExtResource("1_ytvoi")]
+script = SubResource("GDScript_3hrqf")
+
+[node name="Skeleton3D" parent="Armature" index="0"]
+bones/0/position = Vector3(0.0953142, -1.76392, -0.12216)
+bones/0/rotation = Quaternion(-0.00536175, 0.707087, 0.00536179, 0.707086)
+bones/1/position = Vector3(-0.0236785, 1.33632, -0.0589562)
+bones/2/rotation = Quaternion(0.0352136, 0.0245301, -0.0140706, 0.99898)
+bones/3/rotation = Quaternion(0.000189782, 0.0618697, 0.0349125, 0.997473)
+bones/6/rotation = Quaternion(-0.0297175, -0.00994746, 0.0583072, 0.997807)
+bones/7/rotation = Quaternion(-0.157464, 0.0302609, -0.0284112, 0.986652)
+bones/10/rotation = Quaternion(-0.408029, -0.0704935, -0.072024, 0.907389)
+bones/11/rotation = Quaternion(-0.0720916, 0.0463863, 0.0535181, 0.99488)
+bones/12/rotation = Quaternion(-0.0841203, 0.0816638, -0.0143045, 0.993001)
+bones/13/rotation = Quaternion(0.018962, 0.0320943, 0.0120576, 0.999232)
+bones/15/rotation = Quaternion(-0.133862, 0.022841, -0.10934, 0.984685)
+bones/16/rotation = Quaternion(-0.089349, -0.0264058, 0.0903476, 0.991543)
+bones/17/rotation = Quaternion(0.0363874, 0.0126958, -0.0865592, 0.995501)
+bones/18/rotation = Quaternion(-0.00531326, 0.0903343, 0.0588419, 0.994157)
+bones/21/rotation = Quaternion(-0.208759, -0.0524383, 0.0961569, 0.971815)
+bones/22/rotation = Quaternion(-0.0156132, -0.0429248, -0.00416852, 0.998948)
+bones/23/rotation = Quaternion(0.0762793, -0.118229, -0.0290735, 0.989625)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://olgnxaxp175m"]
+[gd_scene load_steps=22 format=3 uid="uid://binx48bcfbeka"]
 
 [ext_resource type="PackedScene" uid="uid://d1fcoa7l6bbtg" path="res://Assets/3D Models/Tree.fbx" id="1_wps48"]
 [ext_resource type="Texture2D" uid="uid://b223bfu7kjsc0" path="res://Assets/Sprites/Solid_black.png" id="2_dkyse"]
@@ -57,6 +57,10 @@ albedo_texture = ExtResource("2_dkyse")
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_imtuc"]
 albedo_texture = ExtResource("2_dkyse")
 
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_ft42g"]
+radius = 0.05
+height = 0.5
+
 [node name="Tree" instance=ExtResource("1_wps48")]
 
 [node name="Cylinder_001" parent="RootNode" index="0"]
@@ -112,3 +116,17 @@ material_override = SubResource("StandardMaterial3D_6tir2")
 
 [node name="Cylinder_018" parent="RootNode" index="17"]
 material_override = SubResource("StandardMaterial3D_imtuc")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." index="1"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" index="0"]
+transform = Transform3D(0.982681, -0.185306, 0, 0.185306, 0.982681, 0, 0, 0, 1, -0.0209856, 0, 0)
+shape = SubResource("CapsuleShape3D_ft42g")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="StaticBody3D" index="1"]
+transform = Transform3D(0.981181, 0.183415, -0.060357, -0.136797, 0.880901, 0.453101, 0.136274, -0.436317, 0.889414, -0.0367602, 0.331084, -0.0595185)
+shape = SubResource("CapsuleShape3D_ft42g")
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="StaticBody3D" index="2"]
+transform = Transform3D(0.981181, 0.183415, -0.060357, -0.136797, 0.880901, 0.453101, 0.136274, -0.436317, 0.889414, -0.0367602, 0.331084, -0.0595185)
+shape = SubResource("CapsuleShape3D_ft42g")

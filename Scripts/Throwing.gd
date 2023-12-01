@@ -17,9 +17,9 @@ func _ready():
 func Enter():
 	camera.Enter()
 	camera.Target = player
-	camera.setCameraOffset(Vector3(1.25,1.5,0))
+	camera.global_position = player.global_position
+	camera.setCameraOffset(Vector3(1,1.5,0))
 	camera.setCameraLenght(3)
-	
 	camera.movSmoothing = 10
 	camera.movSpeed = 4
 	camera.rotSmoothing = 5
@@ -41,7 +41,7 @@ func Exit():
 	
 func Update(delta: float):
 	
-	camera.cameraStep(delta)
+	camera.RotateCamera(delta)
 	if heldCamera == true:
 		var newMousePosition = get_viewport().get_mouse_position()
 		player.rotate_y((mousePosition.x - newMousePosition.x) * MouseSensitivity * delta)
@@ -83,6 +83,8 @@ func onThrowStop():
 		playerhead.apply_impulse(-playerhead.global_transform.basis.z * ThrowForce * (newMousePosition.y - mousePosition.y))
 		playerhead.gravity_scale = 1
 		var playerRemote = player.get_node("HeadRigPoint/RemoteHead")
+		get_parent().get_node("BallRolling").play()
+		player.get_node("BodyRigPoint/Body/JackLantern").ShootBall()
 		#playerRemote.setState()
 		get_parent().on_child_transition(self,"Rolling")
 	pass

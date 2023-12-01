@@ -7,6 +7,7 @@ var Throws = 4
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	stateMachine = get_child(0)
+	get_node("Song").play()
 	pointsText = get_node("/root/Level/ThrowingControls2/RichTextLabel")
 	pass # Replace with function body.
 
@@ -18,12 +19,13 @@ func _process(delta):
 
 func _on_tombstone_broke():
 	points += 1
-	pointsText.text = str("Points: ", points)
+	pointsText.text = str(points)
 	print_debug(points)
 	pass # Replace with function body.
 
 func _on_area_3d_body_entered(body):
 	print_debug("Retry")
+	get_node("BallStopped").play()
 	stateMachine.on_child_transition(stateMachine.get_child(1), "Throwing")
 	pass # Replace with function body.
 
@@ -39,6 +41,7 @@ func _on_rolling_transitioned():
 		get_node("/root/Level/ThrowingControls").hide()
 		get_node("/root/Level/ThrowingControls2").hide()
 		get_node("/root/Level/ThrowingControls3").show()
+		get_node("Won").play()
 		get_node("/root/Level/ThrowingControls3/RichTextLabel").text = str("Final Points:", points)
 	pass # Replace with function body.
 

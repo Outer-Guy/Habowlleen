@@ -18,4 +18,5 @@ func _on_body_shape_entered(body_rid, body, body_shape_index, local_shape_index)
 	if body.name != "Floor" && broken == false:
 		broken = true
 		broke.emit()
+		get_node("AudioStreamPlayer").play()
 	pass # Replace with function body.

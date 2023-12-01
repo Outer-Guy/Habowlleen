@@ -1,0 +1,24 @@
+[remap]
+
+importer="wav"
+type="AudioStreamWAV"
+uid="uid://duqaypobg1ojk"
+path="res://.godot/imported/391536_unlistenable_electro-loose-sound (mp3cut.net).wav-c7a1c1d8386650b32a0923dd49a9d416.sample"
+
+[deps]
+
+source_file="res://Assets/Audio/Lose/391536_unlistenable_electro-loose-sound (mp3cut.net).wav"
+dest_files=["res://.godot/imported/391536_unlistenable_electro-loose-sound (mp3cut.net).wav-c7a1c1d8386650b32a0923dd49a9d416.sample"]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop_mode=0
+edit/loop_begin=0
+edit/loop_end=-1
+compress/mode=0

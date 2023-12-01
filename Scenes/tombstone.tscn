@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://bnpm1j23xev16"]
+[gd_scene load_steps=5 format=3 uid="uid://bnpm1j23xev16"]
 
 [ext_resource type="Script" path="res://Scenes/tombstone.gd" id="1_u2fxo"]
 [ext_resource type="PackedScene" uid="uid://c8kkk01i4th4g" path="res://Assets/3D Models/Lapida.fbx" id="1_uu0pp"]
+[ext_resource type="AudioStream" uid="uid://btr7shnmpb1js" path="res://Assets/Audio/Break tomb/569499_sheyvan_stone-impact-rubble-debris-3 (mp3cut.net).wav" id="3_os2h6"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_rwi4o"]
 size = Vector3(0.742, 1.9, 1.327)
@@ -17,5 +18,8 @@ shape = SubResource("BoxShape3D_rwi4o")
 
 [node name="Lapida" parent="." instance=ExtResource("1_uu0pp")]
 transform = Transform3D(8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0)
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_os2h6")
 
 [connection signal="body_shape_entered" from="." to="." method="_on_body_shape_entered"]

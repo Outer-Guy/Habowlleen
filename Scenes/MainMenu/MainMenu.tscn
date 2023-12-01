@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://bn7x1ob53vd66"]
+[gd_scene load_steps=5 format=3 uid="uid://bn7x1ob53vd66"]
 
 [ext_resource type="Script" path="res://Scenes/MainMenu/MainMenu.gd" id="1_ni2n3"]
 [ext_resource type="Texture2D" uid="uid://bhtrsit0i5yi2" path="res://Assets/Sprites/MainMenu.png" id="2_bjqhq"]
+[ext_resource type="AudioStream" uid="uid://bvfooep6lgube" path="res://Assets/Audio/Button/368745__matrixxx__button-switch-on.wav" id="3_bk6gv"]
+[ext_resource type="AudioStream" uid="uid://bv6v034f24i3c" path="res://Assets/Audio/ES_Unfaithful Doll - Ludvig Moulin.mp3" id="4_twbcs"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -30,6 +32,12 @@ offset_left = 486.0
 offset_top = 310.0
 offset_right = 697.0
 offset_bottom = 378.0
+
+[node name="ButtonPress" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_bk6gv")
+
+[node name="Song" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_twbcs")
 
 [connection signal="pressed" from="Play" to="." method="_on_play_pressed"]
 [connection signal="pressed" from="Quit Game" to="." method="_on_quit_game_pressed"]

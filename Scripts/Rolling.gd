@@ -3,7 +3,7 @@ extends State
 var camera
 var playerHead
 var ThrownSpeed
-var timer : float = 8
+var timer : float
 func _ready():
 	playerHead = get_node("/root/Level/Player/HeadRigPoint/Head")
 	camera = get_node("/root/Level/CameraPivot")
@@ -24,15 +24,17 @@ func Enter():
 	#camera.rotSpeed = 1
 	camera.fovSmoothing = 20
 	ThrownSpeed = camera.Target.forwardSpeed
+	timer = 8
 	print_debug("started")
 	pass
 	
 func Exit():
+	get_parent().get_node("BallRolling").stop()
 	get_node("/root/Level/ThrowingControls").show()
 	pass
 	
 func Update(delta: float):
-	camera.cameraStep(delta)
+	camera.MoveCamera(delta)
 	camera.FOVchange(90 - playerHead.linear_velocity.length() / 15)
 	camera.setCameraLenght(3 - playerHead.linear_velocity.length() / 200)
 	
